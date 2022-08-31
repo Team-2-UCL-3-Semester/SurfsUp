@@ -22,10 +22,42 @@ namespace SurfsUp.Controllers
 
         // GET: Boards
 
-        public async Task<IActionResult> Index(string searchString)
+        public async Task<IActionResult> Index(string searchString, string sortOrder)
             {
+            ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+            ViewData["PriceSortParm"] = sortOrder == "Price" ? "price_desc" : "Price";
+            ViewData["LengthSortParm"] = sortOrder == "Length" ? "length_desc" : "Length";
+            ViewData["WidthSortParm"] = sortOrder == "Width" ? "width_desc" : "Width";
+            ViewData["ThicknessSortParm"] = sortOrder == "Thickness" ? "thickness_desc" : "Thickness";
+            ViewData["VolumeSortParm"] = sortOrder == "Volume" ? "volume_desc" : "Volume";
+            ViewData["TypeSortParm"] = String.IsNullOrEmpty(sortOrder) ? "type_desc" : "";
             var boards = from m in _context.Board
                          select m;
+            switch (sortOrder)
+            {
+                case "name_desc":
+                    boards = boards.OrderBy(m => m.Name);
+                    break;
+                case "price_desc":
+                    boards = boards.OrderBy(m => m.Price);
+                    break;
+                case "length_desc":
+                    boards = boards.OrderBy(m => m.Length);
+                    break;
+                case "width_desc":
+                    boards = boards.OrderBy(m => m.Width);
+                    break;
+                case "thickness_desc":
+                    boards = boards.OrderBy(m => m.Thickness);
+                    break;
+                case "volume_desc":
+                    boards = boards.OrderBy(m => m.Volume);
+                    break;
+                case "type_desc":
+                    boards = boards.OrderBy(m => m.Type);
+                    break;
+            }
+
 
             if (!String.IsNullOrEmpty(searchString))
             {
@@ -34,9 +66,6 @@ namespace SurfsUp.Controllers
             return View(await boards.ToListAsync());
 
         }
-
-
-
 
 
         // GET: Boards/Details/5
