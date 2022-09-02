@@ -64,6 +64,12 @@
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.imgPath)
         </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.IsRented)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.IsRented)
+        </dd>
         <dd class="col-sm-10">
             <img src="@Model.imgPath" width="300" height="300" alt="@Model.Name"
                  onerror="this.src='https://thumbs.dreamstime.com/b/no-image-available-icon-photo-camera-flat-vector-illustration-132483141.jpg';this.onerror=''" />

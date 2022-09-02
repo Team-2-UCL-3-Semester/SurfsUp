@@ -31,6 +31,9 @@ namespace SurfsUp.Controllers
             ViewData["ThicknessSortParm"] = sortOrder == "Thickness" ? "thickness_desc" : "Thickness";
             ViewData["VolumeSortParm"] = sortOrder == "Volume" ? "volume_desc" : "Volume";
             ViewData["TypeSortParm"] = String.IsNullOrEmpty(sortOrder) ? "type_desc" : "";
+            ViewData["IsRented"] = sortOrder == "Volume" ? "volume_desc" : "Volume";
+            
+
             var boards = from m in _context.Board
                          select m;
             switch (sortOrder)
@@ -55,6 +58,9 @@ namespace SurfsUp.Controllers
                     break;
                 case "type_desc":
                     boards = boards.OrderBy(m => m.Type);
+                    break;
+                case "isRented_desc":
+                    boards = boards.OrderBy(m => m.IsRented);
                     break;
             }
 

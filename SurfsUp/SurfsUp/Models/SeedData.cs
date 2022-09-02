@@ -32,7 +32,8 @@ namespace SeedDa
                         Type = "Shortboard",
                         Price = 565.0M,
                         Equipment = "",
-                        imgPath = ""
+                        imgPath = "",
+                        IsRented = false
                     },
 
                     new Board
@@ -45,7 +46,8 @@ namespace SeedDa
                         Type = "Funboard",
                         Price = 685.0M,
                         Equipment = "",
-                        imgPath = ""
+                        imgPath = "",
+                        IsRented = false
                     },
 
                     new Board
@@ -58,7 +60,8 @@ namespace SeedDa
                         Type = "Funboard",
                         Price = 695.0M,
                         Equipment = "",
-                        imgPath = ""
+                        imgPath = "",
+                        IsRented = false
                     },
 
                     new Board
@@ -71,7 +74,8 @@ namespace SeedDa
                         Type = "Fish",
                         Price = 645.0M,
                         Equipment = "",
-                        imgPath = ""
+                        imgPath = "",
+                        IsRented = false
                     },
 
                     new Board
@@ -84,7 +88,8 @@ namespace SeedDa
                         Type = "Longboard",
                         Price = 895.0M,
                         Equipment = "",
-                        imgPath = ""
+                        imgPath = "",
+                        IsRented = false
                     },
                     new Board
                     {
@@ -96,7 +101,8 @@ namespace SeedDa
                         Type = "Shortboard",
                         Price = 565.0M,
                         Equipment = "",
-                        imgPath = ""
+                        imgPath = "",
+                        IsRented = false
                     },
                     new Board
                     {
@@ -108,7 +114,8 @@ namespace SeedDa
                         Type = "Shortboard",
                         Price = 565.0M,
                         Equipment = "",
-                        imgPath = ""
+                        imgPath = "",
+                        IsRented = false
                     },
                     new Board
                     {
@@ -120,7 +127,8 @@ namespace SeedDa
                         Type = "Shortboard",
                         Price = 565.0M,
                         Equipment = "",
-                        imgPath = ""
+                        imgPath = "",
+                        IsRented = false
                     },
                     new Board
                     {
@@ -132,7 +140,8 @@ namespace SeedDa
                         Type = "Shortboard",
                         Price = 565.0M,
                         Equipment = "",
-                        imgPath = ""
+                        imgPath = "",
+                        IsRented = false
                     },
                     new Board
                     {
@@ -144,7 +153,8 @@ namespace SeedDa
                         Type = "Shortboard",
                         Price = 565.0M,
                         Equipment = "",
-                        imgPath = ""
+                        imgPath = "",
+                        IsRented = false
                     }
 
 
