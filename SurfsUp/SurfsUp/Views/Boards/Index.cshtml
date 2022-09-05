@@ -86,7 +86,18 @@
                 @Html.DisplayFor(modelItem => item.Equipment)
             </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.IsRented)
+					<button>
+                    <a asp-action="Rent" asp-route-id="@item.Id">Rent</a>
+					@if (item.IsRented)
+                        {
+                            @:disabled="disabled";
+                        }
+                    </button>
+@*					<input type="button" class="btnRentBoard button" value="Rent"
+                        boardID="board.Id"
+					   @if (item.IsRented) {
+					   @:disabled="disabled";
+					   }/>*@
                 </td>
             <td>
                 @*<a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |*@

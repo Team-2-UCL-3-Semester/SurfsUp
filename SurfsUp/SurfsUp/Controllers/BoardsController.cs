@@ -73,6 +73,24 @@ namespace SurfsUp.Controllers
 
         }
 
+        public async Task<IActionResult>Rent(Guid? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+            
+            DateTime temp = DateTime.Now;
+            var board = await _context.Board
+                .FirstOrDefaultAsync(m => m.Id == id);
+            board.IsRented = true;
+            if (DateTime.Compare(temp.AddSeconds(20), DateTime.Now) >= 0)
+            {
+                board.IsRented = false;
+            }
+            
+            return View();
+        }
 
         // GET: Boards/Details/5
         public async Task<IActionResult> Details(Guid? id)
@@ -96,11 +114,6 @@ namespace SurfsUp.Controllers
         {
           return (_context.Board?.Any(e => e.Id == id)).GetValueOrDefault();
         }
-
-
-
-        
-
     }
 }
 

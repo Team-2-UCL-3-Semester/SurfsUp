@@ -24,7 +24,7 @@ namespace SurfsUp.Models
         public string? Equipment { get; set; }
         public string? imgPath { get; set; }
 
-        public bool? IsRented { get; set  ; }
+        public bool IsRented { get; set  ; }
 
         
     }
