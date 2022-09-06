@@ -20,34 +20,7 @@ namespace SurfsUp.Controllers
             _context = context;
         }
 
-        public IActionResult Index(int pg = 1)
-        {
-            List<Board> boards = _context.Board.ToList();
-
-            const int pageSize = 5;
-            if (pg < 1)
-            {
-                pg = 1;
-            }
-
-            int recsCount = boards.Count();
-
-            var pager = new Pager(recsCount, pg, pageSize);
-
-            int recSkip = (pg - 1) * pageSize;
-
-            var data = boards.Skip(recSkip).Take(pager.PageSize).ToList();
-
-            this.ViewBag.Pager = pager;
-
-            //return View(boards);
-
-            return View(data);
-        }
-
-        // GET: Boards
-
-        public async Task<IActionResult> Index(string searchString, string sortOrder)
+        public async Task<IActionResult> Index(string searchString, string sortOrder, int pg=1)
             {
             ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
             ViewData["PriceSortParm"] = sortOrder == "Price" ? "price_desc" : "Price";
@@ -81,7 +54,29 @@ namespace SurfsUp.Controllers
                 case "type_desc":
                     boards = boards.OrderBy(m => m.Type);
                     break;
+
             }
+
+            const int pageSize = 2;
+            if (pg < 1)
+            {
+                pg = 1;
+            }
+
+            int recsCount = boards.Count();
+
+            var pager = new Pager(recsCount, pg, pageSize);
+
+            int recSkip = (pg - 1) * pageSize;
+
+            var data = boards.Skip(recSkip).Take(pager.PageSize).ToList();
+
+            this.ViewBag.Pager = pager;
+
+           // return View(boards);
+
+            return View(data);
+
 
 
             if (!String.IsNullOrEmpty(searchString))
