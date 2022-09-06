@@ -83,7 +83,7 @@ namespace SurfsUp.Controllers
                     boards = boards.OrderBy(m => m.IsRented);
                     break;
             }
-            return View(await boards.ToListAsync());
+            
 
             const int pageSize = 5;
             if (pg < 1)
