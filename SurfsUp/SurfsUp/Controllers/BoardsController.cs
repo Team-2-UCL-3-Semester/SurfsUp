@@ -32,7 +32,12 @@ namespace SurfsUp.Controllers
             ViewData["VolumeSortParm"] = sortOrder == "Volume" ? "volume_desc" : "Volume";
             ViewData["TypeSortParm"] = String.IsNullOrEmpty(sortOrder) ? "type_desc" : "";
             ViewData["IsRented"] = sortOrder == "Volume" ? "volume_desc" : "Volume";
-            
+
+            //DateTime temp = DateTime.Now;
+            //if (DateTime.Compare(temp.AddSeconds(20), DateTime.Now) >= 0)
+            //{
+            //    board.IsRented = false;
+            //}
 
             var boards = from m in _context.Board
                          select m;
@@ -73,26 +78,25 @@ namespace SurfsUp.Controllers
 
         }
 
-        public async Task<IActionResult>Rent(Guid? id)
+        //[HttpPost, ActionName("Rent")]
+        public async Task<IActionResult> Rent(Guid? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
-            
-            DateTime temp = DateTime.Now;
+
             var board = await _context.Board
                 .FirstOrDefaultAsync(m => m.Id == id);
             board.IsRented = true;
-            if (DateTime.Compare(temp.AddSeconds(20), DateTime.Now) >= 0)
-            {
-                board.IsRented = false;
-            }
-            
-            return View();
+
+
+            await _context.SaveChangesAsync();
+            return View(Rent);
+
         }
 
-        // GET: Boards/Details/5
+        //GET: Boards/Details/5
         public async Task<IActionResult> Details(Guid? id)
         {
             if (id == null || _context.Board == null)
