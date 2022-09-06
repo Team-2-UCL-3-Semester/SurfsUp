@@ -23,7 +23,7 @@ namespace SurfsUp.Controllers
         public async Task<IActionResult> Index(string searchString, string sortOrder, int pg=1)
             {
 
-            List<Board> surfBoards = _context.Board.ToList();
+            //List<Board> surfBoards = _context.Board.ToList();
 
             ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
             ViewData["PriceSortParm"] = sortOrder == "Price" ? "price_desc" : "Price";
@@ -32,6 +32,7 @@ namespace SurfsUp.Controllers
             ViewData["ThicknessSortParm"] = sortOrder == "Thickness" ? "thickness_desc" : "Thickness";
             ViewData["VolumeSortParm"] = sortOrder == "Volume" ? "volume_desc" : "Volume";
             ViewData["TypeSortParm"] = String.IsNullOrEmpty(sortOrder) ? "type_desc" : "";
+
             var boards = from m in _context.Board
                          select m;
             switch (sortOrder)
@@ -66,13 +67,13 @@ namespace SurfsUp.Controllers
                 pg = 1;
             }
 
-            int recsCount = surfBoards.Count();
+            int recsCount = boards.Count();
 
             var pager = new Pager(recsCount, pg, pageSize);
 
             int recSkip = (pg - 1) * pageSize;
 
-            var data = surfBoards.Skip(recSkip).Take(pager.PageSize).ToList();
+            var data = boards.Skip(recSkip).Take(pager.PageSize).ToList();
 
             this.ViewBag.Pager = pager;
 

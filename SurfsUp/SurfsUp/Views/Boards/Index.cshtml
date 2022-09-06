@@ -111,7 +111,7 @@
             @for (var pge = pager.StartPage; pge <= pager.EndPage; pge++)
             {
                 <li class="page-item @(pge == pager.CurrentPage ? "active" : "")">
-                    <a class="page-link" asp-controller="Board" asp-action="Index" asp-route-pg="@pge"> @pge </a>
+                    <a class="page-link" asp-controller="boards" asp-action="Index" asp-route-pg="@pge"> @pge </a>
                 </li>
             }
 
