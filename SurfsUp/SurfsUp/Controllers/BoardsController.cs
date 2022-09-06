@@ -20,8 +20,8 @@ namespace SurfsUp.Controllers
             _context = context;
         }
 
-        public async Task<IActionResult> Index(string searchString, string sortOrder, int pg=1)
-            {
+        public async Task<IActionResult> Index(string searchString, string sortOrder, int pg = 1)
+        {
 
             //List<Board> surfBoards = _context.Board.ToList();
 
@@ -101,11 +101,11 @@ namespace SurfsUp.Controllers
 
             this.ViewBag.Pager = pager;
 
-           // return View(surfBoards);
+            // return View(surfBoards);
 
             return View(data);
 
-
+        }
 
         //[HttpPost, ActionName("Rent")]
         public async Task<IActionResult> Rent(Guid? id)
