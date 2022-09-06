@@ -31,7 +31,7 @@ namespace SurfsUp.Controllers
             ViewData["ThicknessSortParm"] = sortOrder == "Thickness" ? "thickness_desc" : "Thickness";
             ViewData["VolumeSortParm"] = sortOrder == "Volume" ? "volume_desc" : "Volume";
             ViewData["TypeSortParm"] = String.IsNullOrEmpty(sortOrder) ? "type_desc" : "";
-            ViewData["IsRented"] = sortOrder == "Volume" ? "volume_desc" : "Volume";
+            ViewData["IsRented"] = String.IsNullOrEmpty(sortOrder) ? "Rent_desc" : "";
             ViewData["CurrentFiltered"] = searchString;
 
 
@@ -42,8 +42,10 @@ namespace SurfsUp.Controllers
             //    board.IsRented = false;
             //}
 
-            var boards = from m in _context.Board
-                         select m;
+            //var boards = from m in _context.Board
+            //             select m;
+
+            var boards = _context.Board.Where(s => !s.IsRented);
 
             if (!String.IsNullOrEmpty(searchString))
             {
