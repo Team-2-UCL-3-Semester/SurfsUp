@@ -66,17 +66,17 @@ namespace SurfsUp.Controllers
                 pg = 1;
             }
 
-            int recsCount = boards.Count();
+            int recsCount = surfBoards.Count();
 
             var pager = new Pager(recsCount, pg, pageSize);
 
             int recSkip = (pg - 1) * pageSize;
 
-            var data = boards.Skip(recSkip).Take(pager.PageSize).ToList();
+            var data = surfBoards.Skip(recSkip).Take(pager.PageSize).ToList();
 
             this.ViewBag.Pager = pager;
 
-           // return View(boards);
+           // return View(surfBoards);
 
             return View(data);
 
