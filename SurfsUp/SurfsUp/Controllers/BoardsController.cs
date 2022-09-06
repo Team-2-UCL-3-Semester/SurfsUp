@@ -31,8 +31,18 @@ namespace SurfsUp.Controllers
             ViewData["ThicknessSortParm"] = sortOrder == "Thickness" ? "thickness_desc" : "Thickness";
             ViewData["VolumeSortParm"] = sortOrder == "Volume" ? "volume_desc" : "Volume";
             ViewData["TypeSortParm"] = String.IsNullOrEmpty(sortOrder) ? "type_desc" : "";
+            ViewData["CurrentFilter"] = searchString;
+
             var boards = from m in _context.Board
                          select m;
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                boards = boards.Where(s => s.Name.Contains(searchString)
+                                       || s.Type.Contains(searchString)
+                                       || s.Equipment.Contains(searchString));
+            }
+
             switch (sortOrder)
             {
                 case "name_desc":
@@ -56,12 +66,6 @@ namespace SurfsUp.Controllers
                 case "type_desc":
                     boards = boards.OrderBy(m => m.Type);
                     break;
-            }
-
-
-            if (!String.IsNullOrEmpty(searchString))
-            {
-                boards = boards.Where(s => s.Name!.Contains(searchString));
             }
             return View(await boards.ToListAsync());
 
