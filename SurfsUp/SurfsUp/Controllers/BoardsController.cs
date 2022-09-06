@@ -20,10 +20,11 @@ namespace SurfsUp.Controllers
             _context = context;
         }
 
-        // GET: Boards
-
-        public async Task<IActionResult> Index(string searchString, string sortOrder)
+        public async Task<IActionResult> Index(string searchString, string sortOrder, int pg=1)
             {
+
+            //List<Board> surfBoards = _context.Board.ToList();
+
             ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
             ViewData["PriceSortParm"] = sortOrder == "Price" ? "price_desc" : "Price";
             ViewData["LengthSortParm"] = sortOrder == "Length" ? "length_desc" : "Length";
@@ -84,7 +85,27 @@ namespace SurfsUp.Controllers
             }
             return View(await boards.ToListAsync());
 
-        }
+            const int pageSize = 5;
+            if (pg < 1)
+            {
+                pg = 1;
+            }
+
+            int recsCount = boards.Count();
+
+            var pager = new Pager(recsCount, pg, pageSize);
+
+            int recSkip = (pg - 1) * pageSize;
+
+            var data = boards.Skip(recSkip).Take(pager.PageSize).ToList();
+
+            this.ViewBag.Pager = pager;
+
+           // return View(surfBoards);
+
+            return View(data);
+
+
 
         //[HttpPost, ActionName("Rent")]
         public async Task<IActionResult> Rent(Guid? id)
