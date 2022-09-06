@@ -105,6 +105,14 @@ namespace SurfsUp.Controllers
 
             return View(data);
 
+
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                boards = boards.Where(s => s.Name!.Contains(searchString));
+            }
+            return View(await boards.ToListAsync());
+
         }
 
         //[HttpPost, ActionName("Rent")]
