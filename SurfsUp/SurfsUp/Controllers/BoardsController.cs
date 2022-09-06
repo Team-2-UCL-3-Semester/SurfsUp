@@ -32,6 +32,9 @@ namespace SurfsUp.Controllers
             ViewData["VolumeSortParm"] = sortOrder == "Volume" ? "volume_desc" : "Volume";
             ViewData["TypeSortParm"] = String.IsNullOrEmpty(sortOrder) ? "type_desc" : "";
             ViewData["IsRented"] = sortOrder == "Volume" ? "volume_desc" : "Volume";
+            ViewData["CurrentFiltered"] = searchString;
+
+
 
             //DateTime temp = DateTime.Now;
             //if (DateTime.Compare(temp.AddSeconds(20), DateTime.Now) >= 0)
