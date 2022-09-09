@@ -39,6 +39,16 @@ namespace SurfsUp.Controllers
             //Showing Boards, not rented
             var boards = _context.Board.Where(s => !s.IsRented);
             var rentedBoards = _context.Board.Where(s => s.IsRented);
+            
+            //Checking if board is done being rented.
+            foreach (var board in rentedBoards)
+            {
+                if (DateTime.Now >= board.RentedDate.Value.AddSeconds(20))
+                {
+                    board.IsRented = false;
+                }
+            }
+            await _context.SaveChangesAsync();
 
             DateTime RentedDate = DateTime.Today;
 
@@ -89,14 +99,6 @@ namespace SurfsUp.Controllers
             if (pg < 1)
             {
                 pg = 1;
-            }
-            
-            foreach (var board in rentedBoards)
-            {
-                if (DateTime.Now > board.RentedDate.Value.AddSeconds(20))
-                {
-                    board.IsRented = false;
-                }
             }
 
             int recsCount = boards.Count();
