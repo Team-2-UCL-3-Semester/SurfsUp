@@ -50,13 +50,6 @@ namespace SurfsUp.Controllers
             }
             await _context.SaveChangesAsync();
 
-            DateTime RentedDate = DateTime.Today;
-
-            if (DateTime.Now > RentedDate)
-            {
-                
-            }
-
             //Filtering
             if (!String.IsNullOrEmpty(searchString))
             {
