@@ -26,6 +26,10 @@ namespace SurfsUp.Models
 
         public bool IsRented { get; set  ; }
 
+        public DateTime RentedDate { get; set; }
+
+        
+
         
     }
 }

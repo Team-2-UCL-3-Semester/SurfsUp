@@ -23,8 +23,8 @@ namespace SurfsUp.Controllers
         public async Task<IActionResult> Index(string searchString, string sortOrder, int pg = 1)
         {
 
-            //List<Board> surfBoards = _context.Board.ToList();
-
+            
+            //Sort Order
             ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
             ViewData["PriceSortParm"] = sortOrder == "Price" ? "price_desc" : "Price";
             ViewData["LengthSortParm"] = sortOrder == "Length" ? "length_desc" : "Length";
@@ -38,17 +38,22 @@ namespace SurfsUp.Controllers
 
 
 
-            //DateTime temp = DateTime.Now;
-            //if (DateTime.Compare(temp.AddSeconds(20), DateTime.Now) >= 0)
-            //{
-            //    board.IsRented = false;
-            //}
+           
 
-            //var boards = from m in _context.Board
-            //             select m;
+            
 
+            //Showing Boards, not rented
             var boards = _context.Board.Where(s => !s.IsRented);
 
+
+            DateTime RentedDate = DateTime.Today;
+
+            if (DateTime.Now > RentedDate)
+            {
+                
+            }
+
+            //Filtering
             if (!String.IsNullOrEmpty(searchString))
             {
                 boards = boards.Where(s => s.Name.Contains(searchString)
@@ -56,6 +61,8 @@ namespace SurfsUp.Controllers
                                        || s.Equipment.Contains(searchString));
             }
 
+
+            //Sorting
             switch (sortOrder)
             {
                 case "name_desc":
@@ -84,7 +91,7 @@ namespace SurfsUp.Controllers
                     break;
             }
             
-
+            //PageCounter
             const int pageSize = 5;
             if (pg < 1)
             {
