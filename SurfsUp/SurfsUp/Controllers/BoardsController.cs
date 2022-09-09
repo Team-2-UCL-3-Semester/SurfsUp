@@ -36,15 +36,9 @@ namespace SurfsUp.Controllers
             ViewData["IsRented"] = String.IsNullOrEmpty(sortOrder) ? "Rent_desc" : "";
             ViewData["CurrentFiltered"] = searchString;
 
-
-
-           
-
-            
-
             //Showing Boards, not rented
             var boards = _context.Board.Where(s => !s.IsRented);
-
+            var rentedBoards = _context.Board.Where(s => s.IsRented);
 
             DateTime RentedDate = DateTime.Today;
 
@@ -60,7 +54,6 @@ namespace SurfsUp.Controllers
                                        || s.Type.Contains(searchString)
                                        || s.Equipment.Contains(searchString));
             }
-
 
             //Sorting
             switch (sortOrder)
@@ -90,12 +83,20 @@ namespace SurfsUp.Controllers
                     boards = boards.OrderBy(m => m.IsRented);
                     break;
             }
-            
+
             //PageCounter
             const int pageSize = 5;
             if (pg < 1)
             {
                 pg = 1;
+            }
+            
+            foreach (var board in rentedBoards)
+            {
+                if (DateTime.Now > board.RentedDate.Value.AddSeconds(20))
+                {
+                    board.IsRented = false;
+                }
             }
 
             int recsCount = boards.Count();
@@ -107,19 +108,14 @@ namespace SurfsUp.Controllers
             var data = boards.Skip(recSkip).Take(pager.PageSize).ToList();
 
             this.ViewBag.Pager = pager;
-
-            // return View(surfBoards);
-
+            
             return View(data);
-
-
 
             if (!String.IsNullOrEmpty(searchString))
             {
                 boards = boards.Where(s => s.Name!.Contains(searchString));
             }
             return View(await boards.ToListAsync());
-
         }
 
         //[HttpPost, ActionName("Rent")]
@@ -133,6 +129,7 @@ namespace SurfsUp.Controllers
             var board = await _context.Board
                 .FirstOrDefaultAsync(m => m.Id == id);
             board.IsRented = true;
+            board.RentedDate = DateTime.Now;
 
 
             await _context.SaveChangesAsync();
