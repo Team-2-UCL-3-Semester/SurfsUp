@@ -4,6 +4,9 @@
     ViewData["Title"] = "Admin Overview";
 }
 
+@using Microsoft.AspNetCore.Authorization
+@inject IAuthorizationService AuthorizationService
+
 <h1>Admin Overview</h1>
 
 <p>
@@ -74,11 +77,30 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.Equipment)
                 </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                    @*<a asp-action="Details" asp-route-id="@item.Id">Details</a>*@
-                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-                </td>
+                @if ((await AuthorizationService.AuthorizeAsync(User, "Admin")).Succeeded)
+                {
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.Id">Rediger</a> |
+                        <a asp-action="Delete" asp-route-id="@item.Id">Slet</a>
+                        <a asp-action="Details" asp-route-id="@item.Id">Details</a>
+                    </td>
+
+                }
+                else if((await AuthorizationService.AuthorizeAsync(User, "User")).Succeeded)
+                {
+                    <td>
+                        <a asp-action="Rent" asp-route-id="@item.Id">Udlej</a>
+                        <a asp-action="Details" asp-route-id="@item.Id">Details</a>
+                    </td>
+
+                }
+                else{
+                    <td>
+                        <a asp-action="Details" asp-route-id="@item.Id">Details</a>
+                    </td>
+                }
+
+
             </tr>
         }
     </tbody>

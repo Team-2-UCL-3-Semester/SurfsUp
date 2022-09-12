@@ -17,6 +17,14 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.Requ
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("Admin", policy =>
+        policy.RequireRole("Admin"));
+    options.AddPolicy("User", policy =>
+        policy.RequireRole("User"));
+});
+
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
