@@ -23,8 +23,8 @@ namespace SurfsUp.Controllers
         public async Task<IActionResult> Index(string searchString, string sortOrder, int pg = 1)
         {
 
-            //List<Board> surfBoards = _context.Board.ToList();
-
+            
+            //Sort Order
             ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
             ViewData["PriceSortParm"] = sortOrder == "Price" ? "price_desc" : "Price";
             ViewData["LengthSortParm"] = sortOrder == "Length" ? "length_desc" : "Length";
@@ -36,19 +36,21 @@ namespace SurfsUp.Controllers
             ViewData["IsRented"] = String.IsNullOrEmpty(sortOrder) ? "Rent_desc" : "";
             ViewData["CurrentFiltered"] = searchString;
 
-
-
-            //DateTime temp = DateTime.Now;
-            //if (DateTime.Compare(temp.AddSeconds(20), DateTime.Now) >= 0)
-            //{
-            //    board.IsRented = false;
-            //}
-
-            //var boards = from m in _context.Board
-            //             select m;
-
+            //Showing Boards, not rented
             var boards = _context.Board.Where(s => !s.IsRented);
+            var rentedBoards = _context.Board.Where(s => s.IsRented);
+            
+            //Checking if board is done being rented.
+            foreach (var board in rentedBoards)
+            {
+                if (DateTime.Now >= board.RentedDate.Value.AddSeconds(20))
+                {
+                    board.IsRented = false;
+                }
+            }
+            await _context.SaveChangesAsync();
 
+            //Filtering
             if (!String.IsNullOrEmpty(searchString))
             {
                 boards = boards.Where(s => s.Name.Contains(searchString)
@@ -56,6 +58,7 @@ namespace SurfsUp.Controllers
                                        || s.Equipment.Contains(searchString));
             }
 
+            //Sorting
             switch (sortOrder)
             {
                 case "name_desc":
@@ -83,8 +86,8 @@ namespace SurfsUp.Controllers
                     boards = boards.OrderBy(m => m.IsRented);
                     break;
             }
-            
 
+            //PageCounter
             const int pageSize = 5;
             if (pg < 1)
             {
@@ -100,19 +103,14 @@ namespace SurfsUp.Controllers
             var data = boards.Skip(recSkip).Take(pager.PageSize).ToList();
 
             this.ViewBag.Pager = pager;
-
-            // return View(surfBoards);
-
+            
             return View(data);
-
-
 
             if (!String.IsNullOrEmpty(searchString))
             {
                 boards = boards.Where(s => s.Name!.Contains(searchString));
             }
             return View(await boards.ToListAsync());
-
         }
 
         //[HttpPost, ActionName("Rent")]
@@ -126,6 +124,7 @@ namespace SurfsUp.Controllers
             var board = await _context.Board
                 .FirstOrDefaultAsync(m => m.Id == id);
             board.IsRented = true;
+            board.RentedDate = DateTime.Now;
 
 
             await _context.SaveChangesAsync();
