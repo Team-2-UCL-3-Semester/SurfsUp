@@ -75,6 +75,35 @@ namespace SurfsUp.Controllers
             return View(board);
         }
 
+        // GET: Boards/CreateU
+        public IActionResult CreateU()
+        {
+            return View();
+        }
+
+        // POST: uBoard/Create
+        // CREATE A UBOARD
+        // WE HATE INHERITANCE
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateU([Bind("Id,Name,Length,Width,Thickness,Volume,Type,Price,Equipment,imgPath,Attribute1")] uBoard board)
+        {
+            if (board.imgPath == "" || board.imgPath == null)
+            {
+                board.imgPath = "https://thumbs.dreamstime.com/b/no-image-available-icon-photo-camera-flat-vector-illustration-132483141.jpg";
+            }
+
+            if (ModelState.IsValid)
+            {
+                board.Id = Guid.NewGuid();
+                _context.Add(board);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            return View(board);
+        }
+
+
         // GET: Boards/Edit/5
         public async Task<IActionResult> Edit(Guid? id)
         {
