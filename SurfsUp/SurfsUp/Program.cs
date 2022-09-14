@@ -19,6 +19,8 @@ builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
 
+
+
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
@@ -44,6 +46,8 @@ app.UseRequestLocalization(localizationOptions);
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+
+
 
 app.UseRouting();
 app.UseAuthentication();;
