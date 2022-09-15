@@ -1,4 +1,6 @@
-﻿@model IEnumerable<SurfsUp.Models.Board>
+﻿@using Microsoft.AspNetCore.Authorization
+@model IEnumerable<SurfsUp.Models.Board>
+@inject IAuthorizationService AuthorizationService
 
 @{
     ViewData["Title"] = "Board Overview";
@@ -98,27 +100,29 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Equipment)
             </td>
-                <td>
-					<button name="btnRent">
-                        @if (!item.IsRented)
-                        {
-                            <a asp-action="Rent" asp-route-id="@item.Id">Rent</a>
-                        }
-					@if (item.IsRented)
-                        {
-                            <abbr>Rented</abbr>                        }
-                    </button>
-@*					<input type="button" class="btnRentBoard button" value="Rent"
-                        boardID="board.Id"
-					   @if (item.IsRented) {
-					   @:disabled="disabled";
-					   }/>*@
-                </td>
-            <td>
-                @*<a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |*@
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a>
-                @*<a asp-action="Delete" asp-route-id="@item.Id">Delete</a>*@
-            </td>
+                @if ((await AuthorizationService.AuthorizeAsync(User, "User")).Succeeded)
+                {
+                    <td>
+                        <a asp-action="Details" asp-route-id="@item.Id">Details</a>
+                        <button name="btnRent">
+                            @if (!item.IsRented)
+                            {
+                                <a asp-action="Rent" asp-route-id="@item.Id">Rent</a>
+                            }
+                            @if (item.IsRented)
+                            {
+                                <abbr>Rented</abbr>
+                            }
+                        </button>
+                    </td>
+
+                }
+                else
+                {
+                    <td>
+                        <a asp-action="Details" asp-route-id="@item.Id">Details</a>
+                    </td>
+                }
         </tr>
 }
     </tbody>
