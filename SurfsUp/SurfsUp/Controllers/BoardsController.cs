@@ -114,7 +114,7 @@ namespace SurfsUp.Controllers
         }
 
         //[HttpPost, ActionName("Rent")]
-        public async Task<IActionResult> Rent(Guid? id)
+        public async Task<IActionResult> Rent(Guid? id, Guid Id)
         {
             if (id == null)
             {
@@ -128,7 +128,13 @@ namespace SurfsUp.Controllers
 
 
             await _context.SaveChangesAsync();
+
+
+            
+
+            _context.SaveRenting(DateTime.Now, DateTime.Now.AddMinutes(1), "71be347a-c614-47d5-868f-4051ad018009", Id);
             return View(Rent);
+       
 
         }
 
