@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AspNetCore;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.DotNet.Scaffolding.Shared.Messaging;
 using Microsoft.EntityFrameworkCore;
 using SurfsUp.Data;
 using SurfsUp.Models;
@@ -120,9 +122,13 @@ namespace SurfsUp.Controllers
             {
                 return NotFound();
             }
-
             var board = await _context.Board
                 .FirstOrDefaultAsync(m => m.Id == id);
+            if (board.IsRented)
+            {
+                Views_Boards_Rented Rented = new();
+                return View(Rented);
+            }
             board.IsRented = true;
             board.RentedDate = DateTime.Now;
 
