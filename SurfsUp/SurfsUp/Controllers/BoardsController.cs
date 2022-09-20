@@ -137,7 +137,7 @@ namespace SurfsUp.Controllers
             // Vi tager nu userID fra den user der er logget ind ved claims.Value
             var claimsIdentity = (ClaimsIdentity)User.Identity;
             var claims = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
-            _context.SaveRenting(DateTime.Now, DateTime.Now.AddMinutes(1), claims.Value, Id); //"71be347a-c614-47d5-868f-4051ad018009", Id);
+            _context.SaveRenting(DateTime.Now, DateTime.Now.AddMinutes(1), claims.Value, Id);
             return View(Rent);
         }
 
