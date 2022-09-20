@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.DotNet.Scaffolding.Shared.Messaging;
@@ -124,15 +126,18 @@ namespace SurfsUp.Controllers
             
             if (board.IsRented)
             {
-                return View(Index);
+                return NotFound();
             }
             
             board.IsRented = true;
             board.RentedDate = DateTime.Now;
 
             await _context.SaveChangesAsync();
-
-            _context.SaveRenting(DateTime.Now, DateTime.Now.AddMinutes(1), "71be347a-c614-47d5-868f-4051ad018009", Id);
+            // Ide fra Jaco og denne video - https://www.youtube.com/watch?v=qRvIVSV4YuM
+            // Vi tager nu userID fra den user der er logget ind ved claims.Value
+            var claimsIdentity = (ClaimsIdentity)User.Identity;
+            var claims = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+            _context.SaveRenting(DateTime.Now, DateTime.Now.AddMinutes(1), claims.Value, Id); //"71be347a-c614-47d5-868f-4051ad018009", Id);
             return View(Rent);
         }
 
