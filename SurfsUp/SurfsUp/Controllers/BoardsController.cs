@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using AspNetCore;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.DotNet.Scaffolding.Shared.Messaging;
@@ -24,8 +23,6 @@ namespace SurfsUp.Controllers
 
         public async Task<IActionResult> Index(string searchString, string sortOrder, int pg = 1)
         {
-
-            
             //Sort Order
             ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
             ViewData["PriceSortParm"] = sortOrder == "Price" ? "price_desc" : "Price";
@@ -124,24 +121,19 @@ namespace SurfsUp.Controllers
             }
             var board = await _context.Board
                 .FirstOrDefaultAsync(m => m.Id == id);
+            
             if (board.IsRented)
             {
-                Views_Boards_Rented Rented = new();
-                return View(Rented);
+                return View(Index);
             }
+            
             board.IsRented = true;
             board.RentedDate = DateTime.Now;
 
-
             await _context.SaveChangesAsync();
-
-
-            
 
             _context.SaveRenting(DateTime.Now, DateTime.Now.AddMinutes(1), "71be347a-c614-47d5-868f-4051ad018009", Id);
             return View(Rent);
-       
-
         }
 
         //GET: Boards/Details/5
