@@ -23,7 +23,9 @@ namespace SurfsUp.Models
         public decimal Price { get; set; }
         public string? Equipment { get; set; }
         public string? imgPath { get; set; }
+        [ConcurrencyCheck]
         public bool IsRented { get; set  ; }
         public DateTime? RentedDate { get; set; }
+        
     }
 }

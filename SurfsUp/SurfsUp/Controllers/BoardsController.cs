@@ -114,7 +114,7 @@ namespace SurfsUp.Controllers
             return View(await boards.ToListAsync());
         }
 
-        //[HttpPost, ActionName("Rent")]
+        // Rent Board
         public async Task<IActionResult> Rent(Guid? id, Guid Id)
         {
             if (id == null)
@@ -133,6 +133,7 @@ namespace SurfsUp.Controllers
             board.RentedDate = DateTime.Now;
 
             await _context.SaveChangesAsync();
+            
             // Ide fra Jaco og denne video - https://www.youtube.com/watch?v=qRvIVSV4YuM
             // Vi tager nu userID fra den user der er logget ind ved claims.Value
             var claimsIdentity = (ClaimsIdentity)User.Identity;
