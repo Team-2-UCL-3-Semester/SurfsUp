@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using SurfsUp.Models;
 using Microsoft.Data.SqlClient;
 using System.Data;
+using System.Reflection.Emit;
 
 namespace SurfsUp.Data
 {
@@ -18,6 +19,7 @@ namespace SurfsUp.Data
         public SurfsUpContext (DbContextOptions<SurfsUpContext> options)
             : base(options)
         {
+
         }
 
         public DbSet<SurfsUp.Models.Board> Board { get; set; } = default!;
@@ -27,6 +29,11 @@ namespace SurfsUp.Data
             // Customize the ASP.NET Identity model and override the defaults if needed.
             // For example, you can rename the ASP.NET Identity table names and more.
             // Add your customizations after calling base.OnModelCreating(builder);
+
+            builder.Entity<Board>()
+    .Property(p => p.RowVersion).IsConcurrencyToken();
+
+
         }
 
         public void SaveRenting(DateTime startDate, DateTime endDate, string userId, Guid boardId)

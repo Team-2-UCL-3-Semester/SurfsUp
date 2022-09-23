@@ -7,6 +7,7 @@ using SurfsUp.Models;
 using System.Globalization;
 using Microsoft.AspNetCore.Identity;
 using System.Configuration;
+using System.Reflection.Emit;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
@@ -27,6 +28,7 @@ builder.Services.AddAuthorization(options =>
     options.AddPolicy("User", policy =>
         policy.RequireRole("User"));
 });
+
 
 
 builder.Services.AddAuthentication().AddGoogle(googleOptions =>

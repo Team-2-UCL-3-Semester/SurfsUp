@@ -101,12 +101,184 @@ namespace SurfsUp.Controllers
         [HttpPost]
         [Authorize(Roles = "Admin")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("Id,Name,Length,Width,Thickness,Volume,Type,Price,Equipment,imgPath")] Board board)
+        public async Task<IActionResult> Edit(Guid id, [Bind("Id,Name,Length,Width,Thickness,Volume,Type,Price,Equipment,imgPath")] Board board, byte[] rowVersion)
         {
             if (id != board.Id)
             {
                 return NotFound();
             }
+
+            var boardToUpdate = await _context.Board.Include(i => i.Administrator).FirstOrDefaultAsync(m => m.Id == id);
+
+
+
+            if (boardToUpdate == null)
+            {
+                Board deletedBoard = new Board();
+                await TryUpdateModelAsync(deletedBoard);
+                ModelState.AddModelError(string.Empty,
+                    "Unable to save changes. The department was deleted by another user.");
+                ViewData["Edit"] = new SelectList(_context.Board, "ID", "Name", deletedBoard.Id);
+                return View(deletedBoard);
+            }
+
+            _context.Entry(boardToUpdate).Property("RowVersion").OriginalValue = rowVersion;
+
+            if (await TryUpdateModelAsync<Board>(
+                boardToUpdate,
+                "",
+                s => s.Name, s => s.Width, s => s.Length, s => s.Id, s => s.Equipment, s => s.Thickness, s => s.Volume, s => s.Type, s => s.Price))
+            {
+                try
+                {
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (DbUpdateConcurrencyException ex)
+                {
+                    var exceptionEntry = ex.Entries.Single();
+                    var clientValues = (Board)exceptionEntry.Entity;
+                    var databaseEntry = exceptionEntry.GetDatabaseValues();
+                    if (databaseEntry == null)
+                    {
+                        ModelState.AddModelError(string.Empty,
+                            "Unable to save changes. The department was deleted by another user.");
+                    }
+                    else
+                    {
+                        var databaseValues = (Board)databaseEntry.ToObject();
+
+                        if (databaseValues.Name != clientValues.Name)
+                        {
+                            ModelState.AddModelError("Name", $"Current value: {databaseValues.Name}");
+                        }
+                        if (databaseValues.Width != clientValues.Width)
+                        {
+                            ModelState.AddModelError("Width", $"Current value: {databaseValues.Width:c}");
+                        }
+                        if (databaseValues.Length != clientValues.Length)
+                        {
+                            ModelState.AddModelError("Length", $"Current value: {databaseValues.Length:d}");
+                        }
+                        if (databaseValues.Equipment != clientValues.Equipment)
+                        {
+                            ModelState.AddModelError("Equipment", $"Current value: {databaseValues.Equipment:d}");
+                        }
+                        if (databaseValues.Thickness != clientValues.Thickness)
+                        {
+                            ModelState.AddModelError("Thickness", $"Current value: {databaseValues.Thickness:d}");
+                        }
+                        if (databaseValues.Volume != clientValues.Volume)
+                        {
+                            ModelState.AddModelError("Volume", $"Current value: {databaseValues.Volume:d}");
+                        }
+                        if (databaseValues.Type != clientValues.Type)
+                        {
+                            ModelState.AddModelError("Type", $"Current value: {databaseValues.Type:d}");
+                        }
+                        if (databaseValues.Price != clientValues.Price)
+                        {
+                            ModelState.AddModelError("Price", $"Current value: {databaseValues.Price:d}");
+                        }
+                        if (databaseValues.Id != clientValues.Id)
+                        {
+                            Instructor databaseInstructor = await _context.Instructors.FirstOrDefaultAsync(i => i.ID == databaseValues.Id);
+                            ModelState.AddModelError("InstructorID", $"Current value: {databaseInstructor?.FullName}");
+                        }
+                            
+                        ModelState.AddModelError(string.Empty, "The record you attempted to edit "
+                                + "was modified by another user after you got the original value. The "
+                                + "edit operation was canceled and the current values in the database "
+                                + "have been displayed. If you still want to edit this record, click "
+                                + "the Save button again. Otherwise click the Back to List hyperlink.");
+                        boardToUpdate.RowVersion = (byte[])databaseValues.RowVersion;
+                        ModelState.Remove("RowVersion");
+                    }
+                }
+            }
+            ViewData["InstructorID"] = new SelectList(_context.Instructors, "ID", "FullName", boardToUpdate.Id);
+            return View(boardToUpdate);
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
             if (ModelState.IsValid)
             {
