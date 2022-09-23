@@ -25,5 +25,8 @@ namespace SurfsUp.Models
         public string? imgPath { get; set; }
         public bool IsRented { get; set  ; }
         public DateTime? RentedDate { get; set; }
+
+        [Timestamp]
+        public byte[] RowVersion { get; set; }
     }
 }
