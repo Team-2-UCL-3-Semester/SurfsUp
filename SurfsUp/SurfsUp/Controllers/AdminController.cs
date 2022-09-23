@@ -182,10 +182,10 @@ namespace SurfsUp.Controllers
                         }
                         if (databaseValues.Id != clientValues.Id)
                         {
-                            Instructor databaseInstructor = await _context.Instructors.FirstOrDefaultAsync(i => i.ID == databaseValues.Id);
-                            ModelState.AddModelError("InstructorID", $"Current value: {databaseInstructor?.FullName}");
+                            Board databaseInstructor = await _context.Board.FirstOrDefaultAsync(i => i.Id == databaseValues.Id);
+                            ModelState.AddModelError("InstructorID", $"Current value: {databaseInstructor?.Id}");
                         }
-                            
+
                         ModelState.AddModelError(string.Empty, "The record you attempted to edit "
                                 + "was modified by another user after you got the original value. The "
                                 + "edit operation was canceled and the current values in the database "
@@ -196,112 +196,31 @@ namespace SurfsUp.Controllers
                     }
                 }
             }
-            ViewData["InstructorID"] = new SelectList(_context.Instructors, "ID", "FullName", boardToUpdate.Id);
+            ViewData["Edit"] = new SelectList(_context.Board, "ID", "Name", boardToUpdate.Id);
             return View(boardToUpdate);
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(board);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!BoardExists(board.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(board);
-        }
+        //    if (ModelState.IsValid)
+        //    {
+        //        try
+        //        {
+        //            _context.Update(board);
+        //            await _context.SaveChangesAsync();
+        //        }
+        //        catch (DbUpdateConcurrencyException)
+        //        {
+        //            if (!BoardExists(board.Id))
+        //            {
+        //                return NotFound();
+        //            }
+        //            else
+        //            {
+        //                throw;
+        //            }
+        //        }
+        //        return RedirectToAction(nameof(Index));
+        //    }
+        //    return View(board);
+        //}
 
         // GET: Boards/Delete/5
         [Authorize(Roles = "Admin")]
