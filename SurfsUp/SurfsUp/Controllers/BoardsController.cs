@@ -44,7 +44,7 @@ namespace SurfsUp.Controllers
             //Checking if board is done being rented.
             foreach (var board in rentedBoards)
             {
-                if (DateTime.Now >= board.RentedDate.Value.AddSeconds(20))
+                if (DateTime.Now >= board.RentedDate.Value.AddMinutes(2))
                 {
                     board.IsRented = false;
                 }

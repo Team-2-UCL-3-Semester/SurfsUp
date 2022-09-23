@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
+using SurfsUp.Data;
+using SurfsUp.Models;
 
 namespace SurfsUp.Areas.Identity.Pages.Account.Manage
 {
@@ -17,15 +19,20 @@ namespace SurfsUp.Areas.Identity.Pages.Account.Manage
         private readonly UserManager<IdentityUser> _userManager;
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly ILogger<DeletePersonalDataModel> _logger;
+        private readonly SurfsUpContext _context;
+        
+
 
         public DeletePersonalDataModel(
             UserManager<IdentityUser> userManager,
             SignInManager<IdentityUser> signInManager,
-            ILogger<DeletePersonalDataModel> logger)
+            ILogger<DeletePersonalDataModel> logger,
+            SurfsUpContext context)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
+            _context = context;
         }
 
         /// <summary>
@@ -88,7 +95,8 @@ namespace SurfsUp.Areas.Identity.Pages.Account.Manage
 
 
 
-            
+            _context.DeleteUserRentings(user.Id);
+
             var result = await _userManager.DeleteAsync(user);
             var userId = await _userManager.GetUserIdAsync(user);
             if (!result.Succeeded)
@@ -102,5 +110,6 @@ namespace SurfsUp.Areas.Identity.Pages.Account.Manage
 
             return Redirect("~/");
         }
+
     }
 }

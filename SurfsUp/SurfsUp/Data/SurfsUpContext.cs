@@ -59,6 +59,35 @@ namespace SurfsUp.Data
                 }
             }
         }
+
+        public void DeleteUserRentings(string userId)
+        {
+            // Prepare a premade sql stored procedure query with all the right data
+            string storedSql = "EXEC RemoveRentingsForUser @UserId";
+
+            // Create the connection (and be sure to dispose it at the end)
+            using (SqlConnection cnn = new(connectionString))
+            {
+                try
+                {
+                    cnn.Open();
+                    using (SqlCommand cmd = new(storedSql, cnn))
+                    {
+                        // Create and set the parameters values 
+                        // We use "Parameters.Add" instead of "Parameters.AddWithValue" because this way, the method will check if the datatype maches 
+                        // before the program runs, so it won't crash. "Parameters.AddWithValue" will try to guess the datatype, and isn't always correct.
+                        cmd.Parameters.Add("@UserId", SqlDbType.NVarChar).Value = userId;
+
+
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+                catch (Exception)
+                {
+
+                }
+            }
+        }
     }
 }
 
