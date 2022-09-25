@@ -26,6 +26,8 @@ namespace SurfsUp.Models
         [ConcurrencyCheck]
         public bool IsRented { get; set  ; }
         public DateTime? RentedDate { get; set; }
-        
+
+        [Timestamp]
+        public byte[] RowVersion { get; set; }
     }
 }
