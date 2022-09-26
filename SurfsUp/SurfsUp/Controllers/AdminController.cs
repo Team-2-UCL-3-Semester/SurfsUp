@@ -113,21 +113,17 @@ namespace SurfsUp.Controllers
             //Finder det Boardpost objekt fra databasen der matcher ID'et sendt fra viewet
             var boardToBeUpdated = await _context.Board.FirstOrDefaultAsync(x => x.Id == id);
 
-            //Hvis objektet ikke kan findes, er det slettet. Den følgende 'if' kodeblok håndterer dette scenarie
             if (boardToBeUpdated == null)
             {
                 Board deletedBoard = new Board();
-                //Forsøger at udfylde deletedBoardPost objektet, med det objekt controlleren holder på fra viewet.
-                //Det vil sige, det boardpost objektet vi modtog fra viewet i denne metode.
+                
                 await TryUpdateModelAsync(deletedBoard);
-                //AddModelError, tilføjer fejlbeskeden brugeren skal se.
                 ModelState.AddModelError("", "Board ændringer kan ikke gemmes. En anden bruger har slettet boarded");
-                //Sender objektet tilbage til viewet
+
                 return View(deletedBoard);
             }
 
             //Sætter original værdien for RowVersion,
-            //dvs. den oprindelige vi fik fra da vi kaldte Edit GET metoden.
             _context.Entry(boardToBeUpdated).Property("RowVersion").OriginalValue = board.RowVersion;
 
             if (await TryUpdateModelAsync<Board>(boardToBeUpdated, "",
@@ -145,19 +141,14 @@ namespace SurfsUp.Controllers
             {
                 try
                 {
-                    //SaveChangesAsync skaber en ConcurrenceException såfremt UPDATE SQL command returnerer 0 ændrede rækker.
-                    //Det gør den hvis RowVersion kollonen på objektet i databasen
-                    //er anderledes fra det boardpost objekt vi arbejder med her.
+                    
                     await _context.SaveChangesAsync();
                     return RedirectToAction(nameof(Index));
                 }
                 catch (DbUpdateConcurrencyException ex)
                 {
-                    //Finder den entity der var involveret i exception
                     var exceptionEntry = ex.Entries.Single();
-                    //Trækker det enkelte objekt ud og hardcaster til et BoardPost objekt
                     var clientValues = (Board)exceptionEntry.Entity;
-                    //Forespørger databasen for at finde frem til de nye værdier der ligger i databasen
                     var databaseEntry = exceptionEntry.GetDatabaseValues();
 
                     //Hvis boardet er slettet i mellemtiden:
@@ -219,32 +210,7 @@ namespace SurfsUp.Controllers
                 }
             }
             return View(boardToBeUpdated);
-            //if (id != board.Id)
-            //{
-            //    return NotFound();
-            //}
-
-            //if (ModelState.IsValid)
-            //{
-            //    try
-            //    {
-            //        _context.Update(board);
-            //        await _context.SaveChangesAsync();
-            //    }
-            //    catch (DbUpdateConcurrencyException)
-            //    {
-            //        if (!BoardExists(board.Id))
-            //        {
-            //            return NotFound();
-            //        }
-            //        else
-            //        {
-            //            throw;
-            //        }
-            //    }
-            //    return RedirectToAction(nameof(Index));
-            //}
-            //return View(board);
+         
         }
 
         // GET: Boards/Delete/5
