@@ -88,6 +88,8 @@ namespace SurfsUp.Data
                 }
             }
         }
+
+        public DbSet<SurfsUp.Models.Rentings> Rentings { get; set; }
     }
 }
 
