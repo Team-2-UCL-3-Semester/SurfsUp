@@ -22,7 +22,6 @@ namespace SurfsUp.Controllers
         {
             _context = context;
         }
-        RentalsController rentalsController;
 
         public async Task<IActionResult> Index(string searchString, string sortOrder, int pg = 1)
         {
@@ -39,7 +38,7 @@ namespace SurfsUp.Controllers
             ViewData["CurrentFiltered"] = searchString;
 
             //Checks if boards are still rented when index is opened
-            await rentalsController.CheckRentals();
+            //insert code here
 
             //Showing Boards, not rented
             var boards = _context.Board.Where(s => !s.IsRented);
