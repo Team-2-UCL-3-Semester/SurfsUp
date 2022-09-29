@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.3.32811.315
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SurfsUp", "SurfsUp\SurfsUp.csproj", "{0468B2AD-B18D-4D1A-A488-49B09201D8C4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SurfsUp", "SurfsUp\SurfsUp.csproj", "{0468B2AD-B18D-4D1A-A488-49B09201D8C4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SurfsUpAPI", "SurfsUpAPI\SurfsUpAPI.csproj", "{83FE65A2-41F2-4CB3-8D10-1E693D25256F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{0468B2AD-B18D-4D1A-A488-49B09201D8C4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0468B2AD-B18D-4D1A-A488-49B09201D8C4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0468B2AD-B18D-4D1A-A488-49B09201D8C4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{83FE65A2-41F2-4CB3-8D10-1E693D25256F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{83FE65A2-41F2-4CB3-8D10-1E693D25256F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{83FE65A2-41F2-4CB3-8D10-1E693D25256F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{83FE65A2-41F2-4CB3-8D10-1E693D25256F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
