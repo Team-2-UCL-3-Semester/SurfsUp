@@ -22,6 +22,7 @@ namespace SurfsUp.Controllers
         {
             _context = context;
         }
+        RentalsController rentalsController;
 
         public async Task<IActionResult> Index(string searchString, string sortOrder, int pg = 1)
         {
@@ -37,19 +38,12 @@ namespace SurfsUp.Controllers
             ViewData["IsRented"] = String.IsNullOrEmpty(sortOrder) ? "Rent_desc" : "";
             ViewData["CurrentFiltered"] = searchString;
 
+            //Checks if boards are still rented when index is opened
+            await rentalsController.CheckRentals();
+
             //Showing Boards, not rented
             var boards = _context.Board.Where(s => !s.IsRented);
             var rentedBoards = _context.Board.Where(s => s.IsRented);
-            
-            //Checking if board is done being rented.
-            foreach (var board in rentedBoards)
-            {
-                if (DateTime.Now >= board.RentedDate.Value.AddMinutes(2))
-                {
-                    board.IsRented = false;
-                }
-            }
-            await _context.SaveChangesAsync();
 
             //Filtering
             if (!String.IsNullOrEmpty(searchString))

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -10,7 +11,7 @@ using SurfsUp.Models;
 
 namespace SurfsUp.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/Tezeract")]
     [ApiController]
     public class RentalsController : ControllerBase
     {
@@ -41,47 +42,49 @@ namespace SurfsUp.Controllers
 
             return rentings;
         }
-
-        // PUT: api/Rentals/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutRentings(int id, Rentings rentings)
+        //GET: api/Rentals
+        //Checking if board is done being rented.
+        public async Task<IActionResult> CheckRentals()
         {
-            if (id != rentings.Id)
+            var boards = _context.Board.Where(s => !s.IsRented);
+            var rentedBoards = _context.Board.Where(s => s.IsRented);
+            foreach (var board in rentedBoards)
             {
-                return BadRequest();
-            }
-
-            _context.Entry(rentings).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!RentingsExists(id))
+                if (DateTime.Now >= board.RentedDate.Value.AddMinutes(2))
                 {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
+                    board.IsRented = false;
                 }
             }
-
-            return NoContent();
+            await _context.SaveChangesAsync();
+            return Ok();
         }
 
-        // POST: api/Rentals
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
-        public async Task<ActionResult<Rentings>> PostRentings(Rentings rentings)
+        [HttpPost("rent")]
+        public async Task<IActionResult> Rent(Guid? id, Guid Id)
         {
-            _context.Rentings.Add(rentings);
+            if (id == null)
+            {
+                return NotFound();
+            }
+            var board = await _context.Board
+                .FirstOrDefaultAsync(m => m.Id == id);
+
+            if (board.IsRented)
+            {
+                return NotFound();
+            }
+
+            board.IsRented = true;
+            board.RentedDate = DateTime.Now;
+
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetRentings", new { id = rentings.Id }, rentings);
+            // Ide fra Jaco og denne video - https://www.youtube.com/watch?v=qRvIVSV4YuM
+            // Vi tager nu userID fra den user der er logget ind ved claims.Value
+            var claimsIdentity = (ClaimsIdentity)User.Identity;
+            var claims = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+            _context.SaveRenting(DateTime.Now, DateTime.Now.AddMinutes(1), claims.Value, Id);
+            return CreatedAtAction("Rent", new { id = board.Id }, board);
         }
 
         // DELETE: api/Rentals/5
