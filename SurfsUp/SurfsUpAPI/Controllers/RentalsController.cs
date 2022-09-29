@@ -42,7 +42,7 @@ namespace SurfsUpAPI.Controllers
             var claimsIdentity = (ClaimsIdentity)User.Identity;
             var claims = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
             _context.SaveRenting(DateTime.Now, DateTime.Now.AddMinutes(1), claims.Value, Id);
-            return CreatedAtAction("Rent", new { id = board.Id }, board);
+            return Ok();
         }
 
         //GET: api/Rentals
