@@ -18,7 +18,7 @@ namespace SurfsUpAPI.Controllers
         }
         // POST: api/Rentals
         [HttpPost("rent")]
-        public async Task<IActionResult> Rent(Guid? id, Guid Id)
+        public async Task<IActionResult> Rent(Guid id)
         {
             if (id == null)
             {
@@ -48,9 +48,14 @@ namespace SurfsUpAPI.Controllers
 
             // Ide fra Jaco og denne video - https://www.youtube.com/watch?v=qRvIVSV4YuM
             // Vi tager nu userID fra den user der er logget ind ved claims.Value
-            var claimsIdentity = (ClaimsIdentity)User.Identity;
-            var claims = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
-            _context.SaveRenting(DateTime.Now, DateTime.Now.AddMinutes(1), claims.Value, Id);
+
+
+            //  var claimsIdentity = (ClaimsIdentity)User.Identity;
+            //  var claims = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+
+       
+
+            _context.SaveRenting(DateTime.Now, DateTime.Now.AddMinutes(1), "9e7aa49f-1b34-468e-b60d-dd2541c9694e", id) ;
             return Ok();
         }
 
@@ -63,7 +68,7 @@ namespace SurfsUpAPI.Controllers
             var rentedBoards = _context.Board.Where(s => s.IsRented);
             foreach (var board in rentedBoards)
             {
-                if (DateTime.Now >= board.RentedDate.Value.AddMinutes(2))
+                if (DateTime.Now >= board.RentedDate.Value.AddSeconds(10))
                 {
                     board.IsRented = false;
                 }
