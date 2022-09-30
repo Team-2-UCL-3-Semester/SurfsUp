@@ -13,5 +13,9 @@
   <ItemGroup>
     <ProjectReference Include="..\SurfsUp\SurfsUp.csproj" />
   </ItemGroup>
+	
+   <ItemGroup>
+    <ProjectCapability Include="CSharp;Managed;ClassDesigner" />
+   </ItemGroup>
 
 </Project>
