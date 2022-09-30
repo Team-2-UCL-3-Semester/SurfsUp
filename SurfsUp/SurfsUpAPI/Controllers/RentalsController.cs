@@ -24,13 +24,22 @@ namespace SurfsUpAPI.Controllers
             {
                 return NotFound();
             }
+
             var board = await _context.Board
                 .FirstOrDefaultAsync(m => m.Id == id);
 
-            if (board.IsRented)
+            if(board == null)
             {
-                return NotFound();
+                return Ok();
             }
+            else
+            {
+                if (board.IsRented)
+                {
+                    return NotFound();
+                }
+            }
+
 
             board.IsRented = true;
             board.RentedDate = DateTime.Now;
