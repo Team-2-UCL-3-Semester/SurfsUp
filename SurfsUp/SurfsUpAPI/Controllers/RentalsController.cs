@@ -6,8 +6,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace SurfsUpAPI.Controllers
 {
-    [Route("api/[controller]")]
+    
     [ApiController]
+    [Route("/")]
     public class RentalsController : ControllerBase
     {
         private readonly SurfsUpContext _context;
