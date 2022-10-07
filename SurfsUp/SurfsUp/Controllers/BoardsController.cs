@@ -1,10 +1,9 @@
-﻿using System.Security.Claims;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using SurfsUp.APIs;
 using SurfsUp.Data;
 using SurfsUp.Models;
-using SurfsUp.APIs;
+using System.Security.Claims;
 
 namespace SurfsUp.Controllers
 {
@@ -110,7 +109,7 @@ namespace SurfsUp.Controllers
             userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
 
             var board = await _context.Board
-    .FirstOrDefaultAsync(m => m.Id == id);
+            .FirstOrDefaultAsync(m => m.Id == id);
 
             await rentApi.Rent(httpClient, userId, id);
 

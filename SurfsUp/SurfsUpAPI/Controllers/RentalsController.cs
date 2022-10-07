@@ -20,7 +20,7 @@ namespace SurfsUpAPI.Controllers
         // POST: api/Rentals
         [HttpGet("rent")]
         public async Task<IActionResult> Rent(string userId, Guid id)
-        {
+        {   
             if (id == null)
             {
                 return NotFound();
@@ -40,12 +40,6 @@ namespace SurfsUpAPI.Controllers
                     return NotFound();
                 }
             }
-
-            // Ide fra Jaco og denne video - https://www.youtube.com/watch?v=qRvIVSV4YuM
-            // Vi tager nu userID fra den user der er logget ind ved claims.Value
-
-            //var claimsIdentity = (ClaimsIdentity)User.Identity;
-            //userId = Convert.ToString(claimsIdentity.FindFirst(ClaimTypes.NameIdentifier));
 
             if (userId == null || userId == "")
             {
