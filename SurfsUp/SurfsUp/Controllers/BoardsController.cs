@@ -1,16 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Identity;
+﻿using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.DotNet.Scaffolding.Shared.Messaging;
 using Microsoft.EntityFrameworkCore;
 using SurfsUp.Data;
 using SurfsUp.Models;
-using static System.Net.WebRequestMethods;
 using SurfsUp.APIs;
 
 namespace SurfsUp.Controllers
@@ -100,7 +93,7 @@ namespace SurfsUp.Controllers
             var data = boards.Skip(recSkip).Take(pager.PageSize).ToList();
 
             this.ViewBag.Pager = pager;
-            
+
             return View(data);
 
             if (!String.IsNullOrEmpty(searchString))
@@ -112,38 +105,24 @@ namespace SurfsUp.Controllers
 
         // Rent Board
 
-        public async void RentApi(HttpClient httpClient)
-        {
-            await rentApi.Rent(httpClient);
-        }
+        //public async void RentApi(HttpClient httpClient)
+        //{
+        //    await rentApi.Rent(httpClient,);
+        //}
 
-        public async Task<IActionResult> Rent(Guid? id, Guid Id)
+        public async Task<IActionResult> Rent(HttpClient httpClient, string? userId, Guid id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-            var board = await _context.Board
-                .FirstOrDefaultAsync(m => m.Id == id);
-            
-            if (board.IsRented)
-            {
-                return NotFound();
-            }
-            
-            board.IsRented = true;
-            board.RentedDate = DateTime.Now;
-
-            await _context.SaveChangesAsync();
-            
-            // Ide fra Jaco og denne video - https://www.youtube.com/watch?v=qRvIVSV4YuM
-            // Vi tager nu userID fra den user der er logget ind ved claims.Value
             var claimsIdentity = (ClaimsIdentity)User.Identity;
-            var claims = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
-            _context.SaveRenting(DateTime.Now, DateTime.Now.AddMinutes(1), claims.Value, Id);
+            userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+            var board = await _context.Board
+    .FirstOrDefaultAsync(m => m.Id == id);
+
+            await rentApi.Rent(httpClient, userId, id);
+
             return View(Rent);
         }
-      
+
         //GET: Boards/Details/5
         public async Task<IActionResult> Details(Guid? id)
         {
@@ -164,7 +143,7 @@ namespace SurfsUp.Controllers
 
         private bool BoardExists(Guid id)
         {
-          return (_context.Board?.Any(e => e.Id == id)).GetValueOrDefault();
+            return (_context.Board?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }

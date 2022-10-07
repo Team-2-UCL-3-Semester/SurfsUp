@@ -40,26 +40,28 @@ namespace SurfsUpAPI.Controllers
                 }
             }
 
-
-            board.IsRented = true;
-            board.RentedDate = DateTime.Now;
-
-            await _context.SaveChangesAsync();
-
             // Ide fra Jaco og denne video - https://www.youtube.com/watch?v=qRvIVSV4YuM
             // Vi tager nu userID fra den user der er logget ind ved claims.Value
 
+            //var claimsIdentity = (ClaimsIdentity)User.Identity;
+            //userId = Convert.ToString(claimsIdentity.FindFirst(ClaimTypes.NameIdentifier));
 
-
-            var claimsIdentity = (ClaimsIdentity)User.Identity;
-            userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).ToString();
-
-            if (claimsIdentity == null || userId == null)
+            if (userId == null || userId == "")
             {
+                board.IsRented = true;
+                board.RentedDate = DateTime.Now;
+
+                await _context.SaveChangesAsync();
+
                 _context.SaveRenting(DateTime.Now, DateTime.Now.AddMinutes(1), "9e7aa49f-1b34-468e-b60d-dd2541c9694e", id);
             }
             else
             {
+                board.IsRented = true;
+                board.RentedDate = DateTime.Now;
+
+                await _context.SaveChangesAsync();
+
                 _context.SaveRenting(DateTime.Now, DateTime.Now.AddMinutes(1), userId, id);
             }
             return Ok();

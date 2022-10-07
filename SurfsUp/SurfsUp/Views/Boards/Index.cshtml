@@ -107,7 +107,7 @@
                         <button name="btnRent">
                             @if (!item.IsRented)
                             {
-                                <a asp-action="RentApi" asp-route-id="@item.Id">Rent</a>
+                                <a asp-action="Rent" asp-route-id="@item.Id">Rent</a>
                             }
                             @if (item.IsRented)
                             {
