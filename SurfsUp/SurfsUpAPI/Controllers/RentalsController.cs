@@ -17,7 +17,7 @@ namespace SurfsUpAPI.Controllers
             _context = context;
         }
         // POST: api/Rentals
-        [HttpPost("rent")]
+        [HttpGet("rent")]
         public async Task<IActionResult> Rent(Guid id)
         {
             if (id == null)
@@ -50,12 +50,18 @@ namespace SurfsUpAPI.Controllers
             // Vi tager nu userID fra den user der er logget ind ved claims.Value
 
 
-            //  var claimsIdentity = (ClaimsIdentity)User.Identity;
-            //  var claims = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
 
-       
+            var claimsIdentity = (ClaimsIdentity)User.Identity;
+            var claims = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
 
-            _context.SaveRenting(DateTime.Now, DateTime.Now.AddMinutes(1), "9e7aa49f-1b34-468e-b60d-dd2541c9694e", id) ;
+            if (claimsIdentity == null || claims == null)
+            {
+                _context.SaveRenting(DateTime.Now, DateTime.Now.AddMinutes(1), "9e7aa49f-1b34-468e-b60d-dd2541c9694e", id);
+            }
+            else
+            {
+                _context.SaveRenting(DateTime.Now, DateTime.Now.AddMinutes(1), claims.Value, id);
+            }
             return Ok();
         }
 

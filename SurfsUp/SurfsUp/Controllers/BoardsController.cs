@@ -11,12 +11,15 @@ using Microsoft.EntityFrameworkCore;
 using SurfsUp.Data;
 using SurfsUp.Models;
 using static System.Net.WebRequestMethods;
+using SurfsUp.APIs;
 
 namespace SurfsUp.Controllers
 {
     public class BoardsController : Controller
     {
         private readonly SurfsUpContext _context;
+
+        RentApiController rentApi = new();
 
         public BoardsController(SurfsUpContext context)
         {
@@ -108,6 +111,12 @@ namespace SurfsUp.Controllers
         }
 
         // Rent Board
+
+        public async void RentApi(HttpClient httpClient)
+        {
+            await rentApi.Rent(httpClient);
+        }
+
         public async Task<IActionResult> Rent(Guid? id, Guid Id)
         {
             if (id == null)
@@ -134,7 +143,7 @@ namespace SurfsUp.Controllers
             _context.SaveRenting(DateTime.Now, DateTime.Now.AddMinutes(1), claims.Value, Id);
             return View(Rent);
         }
-
+      
         //GET: Boards/Details/5
         public async Task<IActionResult> Details(Guid? id)
         {
