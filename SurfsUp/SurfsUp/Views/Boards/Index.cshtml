@@ -100,8 +100,8 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Equipment)
             </td>
-                @if ((await AuthorizationService.AuthorizeAsync(User, "User")).Succeeded)
-                {
+                @*if ((await AuthorizationService.AuthorizeAsync(User, "User")).Succeeded)
+                {*@
                     <td>
                         <a asp-action="Details" asp-route-id="@item.Id">Details</a>
                         <button name="btnRent">
@@ -116,7 +116,7 @@
                         </button>
                     </td>
 
-                }
+                @*}*@
                 else
                 {
                     <td>
