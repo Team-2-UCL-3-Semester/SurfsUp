@@ -104,12 +104,6 @@ namespace SurfsUp.Controllers
         }
 
         // Rent Board
-
-        //public async void RentApi(HttpClient httpClient)
-        //{
-        //    await rentApi.Rent(httpClient,);
-        //}
-
         public async Task<IActionResult> Rent(HttpClient httpClient, string? userId, Guid id)
         {
             var claimsIdentity = (ClaimsIdentity)User.Identity;
