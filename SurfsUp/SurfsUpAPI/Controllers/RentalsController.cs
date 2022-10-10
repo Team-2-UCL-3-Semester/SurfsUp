@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using SurfsUp.Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using SurfsUpAPI.Models;
 
 namespace SurfsUpAPI.Controllers
 {
@@ -73,7 +75,6 @@ namespace SurfsUpAPI.Controllers
         [HttpGet("check")]
         public async Task<IActionResult> CheckRentals()
         {
-            var boards = _context.Board.Where(s => !s.IsRented);
             var rentedBoards = _context.Board.Where(s => s.IsRented);
             foreach (var board in rentedBoards)
             {
@@ -85,5 +86,17 @@ namespace SurfsUpAPI.Controllers
             await _context.SaveChangesAsync();
             return Ok();
         }
+
+
+
+
+       [HttpGet("Index")]
+        public async Task<IActionResult> Boards()
+        {
+            var boards = _context.Board.Where(s => !s.IsRented);
+
+            return Ok(boards);
+        }
+      
     }
 }
