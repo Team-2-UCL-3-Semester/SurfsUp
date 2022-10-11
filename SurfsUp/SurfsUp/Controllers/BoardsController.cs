@@ -40,7 +40,7 @@ namespace SurfsUp.Controllers
             //Showing Boards, not rented
 
 
-        //    var boards = await rentApi.Boards(client);
+            //var boards = await rentApi.Boards(client);
 
 
             
