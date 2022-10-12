@@ -11,7 +11,7 @@ using System.Data;
 
 namespace SurfsUpAPI.Data
 {
-    public class SurfsUpContext : IdentityDbContext<IdentityUser> // IdentityDbContext<IdentityUser>
+    public class SurfsUpContext : DbContext // IdentityDbContext<IdentityUser>
     {
         string connectionString = "Server = 10.56.8.36; Database=PEDB14;User Id = PE-14; Password=OPENDB_14;";
         //"Server=(localdb)\\mssqllocaldb;Database=SurfsUp;Trusted_Connection=True;MultipleActiveResultSets=true";
