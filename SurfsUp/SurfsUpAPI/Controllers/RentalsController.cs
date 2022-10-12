@@ -91,7 +91,7 @@ namespace SurfsUpAPI.Controllers
 
 
        [HttpGet("Index")]
-        public async Task<IActionResult> Boards()
+        public  IActionResult Index()
         {
             var boards = _context.Board.Where(s => !s.IsRented);
 

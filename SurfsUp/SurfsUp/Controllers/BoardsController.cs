@@ -41,10 +41,13 @@ namespace SurfsUp.Controllers
 
             //Showing Boards, not rented
 
-            string a = @"[""Id"":""7852c989-6b1b-460e-7dae-08da8a57e3ef"", ""Name"":""The Wide Glider"", ""Length"":7.1,""Width"":21.75,""Thickness"":2.75,""Volume"":44.16,""Type"":""Funboard"", ""Price"":785,""Equipment"": null ,""imgPath"": ""https://www.light-surfboards.com/uploads/5/7/3/0/57306051/s326152794241300969_p335_i10_w5000.jpeg?width=2560"",  ""IsRented"": false , ""RentedDate"": ""2022-10-07T10:49:22.8116686"" , ""RowVersion"": ""AAAAAAAACFs=""}]";
+            client.BaseAddress = new Uri("https://localhost:7154");
+            var boards = await client.GetFromJsonAsync<IEnumerable<Board>>("/Index");
 
-            var unSeBboards = await rentApi.Boards(client);
-            List<Board> boards = JsonSerializer.Deserialize<List<Board>>(a);
+
+    //        var unSeBboards = await rentApi.Index(client);
+
+     //       var boards = await httpClient.GetFromJsonAsync<IEnumerable<Board>>(unSeBboards.ToString());
 
             
 
@@ -53,7 +56,7 @@ namespace SurfsUp.Controllers
 
             var rentedBoards = _context.Board.Where(s => s.IsRented);
 
-       /*     //Filtering
+            //Filtering
             if (!String.IsNullOrEmpty(searchString))
             {
                 boards = boards.Where(s => s.Name.Contains(searchString)
@@ -88,7 +91,7 @@ namespace SurfsUp.Controllers
                 case "isRented_desc":
                     boards = boards.OrderBy(m => m.IsRented);
                     break;
-            }*/
+            }
 
             //PageCounter
             const int pageSize = 5;
@@ -109,11 +112,11 @@ namespace SurfsUp.Controllers
 
             return View(data);
 
-         /*   if (!String.IsNullOrEmpty(searchString))
+            if (!String.IsNullOrEmpty(searchString))
             {
                 boards = boards.Where(s => s.Name!.Contains(searchString));
             }
-            return View(boards);*/
+            return View(boards);
         }
 
         // Rent Board

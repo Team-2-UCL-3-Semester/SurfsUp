@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SurfsUp.Models;
+using static System.Net.WebRequestMethods;
 
 namespace SurfsUp.APIs
 {
@@ -17,9 +18,10 @@ namespace SurfsUp.APIs
         }
 
         [HttpGet("Index")]
-        public async Task<IActionResult> Boards([FromForm] HttpClient client)
+        public async Task<IActionResult> Index([FromForm] HttpClient client)
         {
-            return Ok(await client.GetStringAsync($"https://localhost:7154/Index"));
+            client.BaseAddress = new Uri("https://localhost:7154");
+            return Ok(await client.GetStringAsync("/Index"));
         }
         
     }
