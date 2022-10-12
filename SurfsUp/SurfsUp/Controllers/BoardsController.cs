@@ -110,7 +110,7 @@ namespace SurfsUp.Controllers
             userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
 
             var board = await _context.Board
-    .FirstOrDefaultAsync(m => m.Id == id);
+            .FirstOrDefaultAsync(m => m.Id == id);
 
             await rentApi.Rent(httpClient, userId, id);
 

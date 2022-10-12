@@ -7,10 +7,11 @@ namespace SurfsUp.APIs
     [ApiController]
     public class RentApiController : ControllerBase
     {
-        [HttpPost]
+        [HttpGet("Rent")]
         public async Task<IActionResult> Rent([FromForm] HttpClient client, string userId, Guid id)
         {
-            return Ok(await client.GetStringAsync($"https://localhost:7154/api/Rentals/rent?userId={userId}&id={id}"));
+            return Ok(await client.GetStringAsync($"https://localhost:7154/rent?userId={userId}&id={id}"));
         }
+
     }
 }
