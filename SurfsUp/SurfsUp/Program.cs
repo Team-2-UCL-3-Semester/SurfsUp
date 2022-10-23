@@ -7,6 +7,7 @@ using SurfsUp.Models;
 using System.Globalization;
 using Microsoft.AspNetCore.Identity;
 using System.Configuration;
+using SurfsUp.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
@@ -53,6 +54,8 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+app.UseMiddleware<TimingMiddleware>();
+
 var defaultCulture = new CultureInfo("en-US");
 var localizationOptions = new RequestLocalizationOptions
 {
@@ -65,7 +68,12 @@ app.UseRequestLocalization(localizationOptions);
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
-
+//app.Use(async (ctx, next) =>
+//{
+//    var start = DateTime.Now;
+//    await next.Invoke(ctx);
+//    app.Logger.LogInformation($"Request {ctx.Request.Path}: {(DateTime.UtcNow - start).TotalMilliseconds}ms");
+//});
 
 app.UseRouting();
 app.UseAuthentication();;
