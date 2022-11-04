@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using SurfsUp.Data;
 using Microsoft.EntityFrameworkCore;
+using SurfsUp.Models;
 
 namespace SurfsUpAPI.Controllers
 {
@@ -85,5 +86,13 @@ namespace SurfsUpAPI.Controllers
             await _context.SaveChangesAsync();
             return Ok();
         }
+        [HttpGet("Index")]
+        public IActionResult IndexV1()
+        {
+            var boards = _context.Board.Where(s => !s.IsRented);
+
+            return Ok(boards);
+        }
+        
     }
 }
