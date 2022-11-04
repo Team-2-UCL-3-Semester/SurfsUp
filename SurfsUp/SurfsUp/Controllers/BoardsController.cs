@@ -100,7 +100,7 @@ namespace SurfsUp.Controllers
             {
                 boards = boards.Where(s => s.Name!.Contains(searchString));
             }
-            return View(await boards.ToListAsync());
+            return View(boards);
         }
 
         // Rent Board
