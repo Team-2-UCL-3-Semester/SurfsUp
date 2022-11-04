@@ -39,20 +39,11 @@ namespace SurfsUp.Controllers
             //Checks if boards are still rented when index is opened
             //insert code here
 
-            //Showing Boards, not rented
-
+            //Showing Boards, not rented from the api
             client.BaseAddress = new Uri("https://localhost:7154");
             var boards = await client.GetFromJsonAsync<IEnumerable<Board>>("/Index");
-
-
-    //        var unSeBboards = await rentApi.Index(client);
-
-     //       var boards = await httpClient.GetFromJsonAsync<IEnumerable<Board>>(unSeBboards.ToString());
-
+            List<Board> lboards = new List<Board>();
             
-
-
-         //   var boards = _context.Board.Where(s => !s.IsRented);
 
             var rentedBoards = _context.Board.Where(s => s.IsRented);
 
