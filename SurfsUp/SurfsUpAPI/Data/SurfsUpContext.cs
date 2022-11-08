@@ -20,7 +20,7 @@ namespace SurfsUpAPI.Data
         {
         }
 
-        public DbSet<SurfsUp.Models.Board> Board { get; set; } = default!;
+        public DbSet<SurfsUpAPI.Models.Board> Board { get; set; } = default!;
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
@@ -89,6 +89,6 @@ namespace SurfsUpAPI.Data
             }
         }
 
-        public DbSet<SurfsUp.Models.Rentings> Rentings { get; set; }
+        public DbSet<SurfsUpAPI.Models.Rentals> Rentings { get; set; }
     }
 }

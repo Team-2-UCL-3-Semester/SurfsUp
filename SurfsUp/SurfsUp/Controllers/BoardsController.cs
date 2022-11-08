@@ -19,7 +19,7 @@ namespace SurfsUp.Controllers
             _context = context;
         }
 
-        public async Task<IActionResult> Index(string searchString, string sortOrder, int pg = 1)
+        public async Task<IActionResult> Index(HttpClient client, string searchString, string sortOrder, int pg = 1)
         {
             //Sort Order
             ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
@@ -37,8 +37,8 @@ namespace SurfsUp.Controllers
             //insert code here
 
             //Showing Boards, not rented
-            var boards = _context.Board.Where(s => !s.IsRented);
-            var rentedBoards = _context.Board.Where(s => s.IsRented);
+            client.BaseAddress = new Uri("https://localhost:7154");
+            var boards = await client.GetFromJsonAsync<IEnumerable<Board>>("/Index");
 
             //Filtering
             if (!String.IsNullOrEmpty(searchString))
@@ -100,7 +100,7 @@ namespace SurfsUp.Controllers
             {
                 boards = boards.Where(s => s.Name!.Contains(searchString));
             }
-            return View(await boards.ToListAsync());
+            return View(boards);
         }
 
         // Rent Board
