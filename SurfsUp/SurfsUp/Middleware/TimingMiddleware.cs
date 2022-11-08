@@ -16,6 +16,6 @@ public class TimingMiddleware
 	{
         var start = DateTime.Now;
         await _next.Invoke(ctx);
-        _logger.LogInformation($"Timing: {ctx.Request.Path}: {(DateTime.UtcNow - start).TotalMilliseconds}ms");
+        _logger.LogInformation($"Timing: {ctx.Request.Path}: {(DateTime.Now - start).TotalMilliseconds}ms");
     }
 }
