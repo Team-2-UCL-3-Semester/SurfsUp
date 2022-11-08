@@ -1,0 +1,111 @@
+﻿@using Microsoft.AspNetCore.Authorization
+@model IEnumerable<SurfsUp.Models.Board>
+@inject IAuthorizationService AuthorizationService
+
+@{
+    ViewData["Title"] = "Guest Overview";
+
+    
+}
+
+
+
+
+<h1>Board Overview</h1>
+
+<p>
+	
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Image
+            </th>
+            <th>
+                 <a asp-action="Index"> @Html.DisplayNameFor(model => model.Name) </a>
+            </th>
+            <th>
+                <a asp-action="Index">  Length(feet) </a>
+            </th>
+            <th>
+                <a asp-action="Index"> Width(inches) </a>
+            </th>
+            <th>
+                <a asp-action="Index"> Thickness(inches) </a>
+            </th>
+            <th>
+                <a asp-action="Index" > Volume(L) </a>
+            </th>
+            <th>
+                <a asp-action="Index" > @Html.DisplayNameFor(model => model.Type) </a>
+            </th>
+            <th>
+                <a asp-action="Index" > @Html.DisplayNameFor(model => model.Price) </a>
+                
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Equipment)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IsRented)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+			<td>
+                <img src="@Html.DisplayFor(modelItem => item.imgPath)" width="60" height="60"
+                 onerror="this.src='https://thumbs.dreamstime.com/b/no-image-available-icon-photo-camera-flat-vector-illustration-132483141.jpg';this.onerror=''" />
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Length)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Width)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Thickness)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Volume)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Type)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Price)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Equipment)
+            </td>
+                
+                
+                    <td>
+                        <a asp-action="Details" asp-route-id="@item.Id">Details</a>
+                        <button name="btnRent">
+                            @if (!item.IsRented)
+                            {
+                                <a asp-action="Rent" asp-route-id="@item.Id">Rent</a>
+                            }
+                            @if (item.IsRented)
+                            {
+                                <abbr>Rented</abbr>
+                            }
+                        </button>
+                    </td>
+
+                
+                
+        </tr>
+}
+    </tbody>
+</table>
+
+
+

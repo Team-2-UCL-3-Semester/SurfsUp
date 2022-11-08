@@ -5,6 +5,8 @@ using Microsoft.EntityFrameworkCore;
 using SurfsUp.Data;
 using SurfsUp.Models;
 using SurfsUp.APIs;
+using Microsoft.AspNetCore.Authorization;
+using System.Data;
 
 namespace SurfsUp.Controllers
 {
@@ -18,7 +20,9 @@ namespace SurfsUp.Controllers
         {
             _context = context;
         }
+       
 
+        [Authorize(Roles = "User")]
         public async Task<IActionResult> Index(HttpClient client, string searchString, string sortOrder, int pg = 1)
         {
             //Sort Order

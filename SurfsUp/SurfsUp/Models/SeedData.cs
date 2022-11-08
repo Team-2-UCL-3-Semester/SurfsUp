@@ -1,14 +1,17 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using SurfsUp.Data;
 using SurfsUp.Models;
 using System;
+using System.Data;
 using System.Linq;
 
 namespace SeedDa
 {
     public static class SeedData
     {
+        [Authorize(Roles = "User")]
         public static void Initialize(IServiceProvider serviceProvider)
         {
             using (var context = new SurfsUpContext(
@@ -16,6 +19,7 @@ namespace SeedDa
                     DbContextOptions<SurfsUpContext>>()))
             {
                 // Look for any Boards.
+                
                 if (context.Board.Any())
                 {
                     return;   // DB has been seeded
@@ -162,5 +166,6 @@ namespace SeedDa
                 context.SaveChanges();
             }
         }
+       
     }
 }
