@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using SurfsUp.Data;
+using SurfsUpAPI.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +12,7 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<SurfsUpContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("SurfsUpContext") ?? throw new InvalidOperationException("Connection string 'SurfsUpContext' not found.")));
+
 
 
 var app = builder.Build();

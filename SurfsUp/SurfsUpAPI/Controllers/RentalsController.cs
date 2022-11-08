@@ -1,9 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
-using SurfsUp.Data;
+using SurfsUpAPI.Data;
 using Microsoft.EntityFrameworkCore;
-using SurfsUp.Models;
 
 namespace SurfsUpAPI.Controllers
 {
