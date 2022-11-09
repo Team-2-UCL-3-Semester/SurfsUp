@@ -22,7 +22,7 @@ namespace SurfsUp.Controllers
         }
        
 
-        [Authorize(Roles = "User")]
+
         public async Task<IActionResult> Index(HttpClient client, string searchString, string sortOrder, int pg = 1)
         {
             //Sort Order

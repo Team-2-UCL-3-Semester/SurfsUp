@@ -22,7 +22,7 @@ namespace SurfsUp.Controllers
         }
 
         // GET: Boards
-        [Authorize(Roles = "Admin")]
+
         public async Task<IActionResult> Index()
         {
             return _context.Board != null ?
