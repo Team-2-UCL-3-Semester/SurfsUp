@@ -35,7 +35,14 @@ else
             @foreach (var board in boards)
             {
                 <tr>
-                    <td><img src="@board.imgPath" width="60" length="60" /></td>
+					@if (board.imgPath == null)
+					{
+                        <td><img src="https://thumbs.dreamstime.com/b/no-image-available-icon-photo-camera-flat-vector-illustration-132483141.jpg%27" width="60" length="60" onerror="this.src=https://thumbs.dreamstime.com/b/no-image-available-icon-photo-camera-flat-vector-illustration-132483141.jpg%27" /></td>
+                    }
+					else
+					{
+                        <td><img src="@board.imgPath" width="60" length="60" onerror="this.src=https://thumbs.dreamstime.com/b/no-image-available-icon-photo-camera-flat-vector-illustration-132483141.jpg%27" /></td>
+					}
                     <td>@board.Name</td>
                     <td>@board.Length</td>
                     <td>@board.Width</td>
