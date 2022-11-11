@@ -44,12 +44,18 @@ else
                     <td>@board.Type</td>
                     <td>@board.Price</td>
                     <td>@board.Equipment</td>
+                    <td>
+                        <button class="btn btn-primary" @onclick="Rent(Http, id1, id2 )">Rent</button>
+                    </td>
                 </tr>
             }
         </tbody>
     </table>
     }
 @code{
+
+    string id1 = "5d761615-2ece-4fd8-9e05-4cd770868859";
+    public static readonly Guid id2 = new Guid("42675172-DBAD-421F-A55E-4014D9EA56BC");
 
 
     private Board[]? boards;
@@ -58,43 +64,46 @@ else
     {
         boards = await Http.GetFromJsonAsync<Board[]>("https://localhost:7154/Index");
     }
-    
+
     public class Board
     {
         public Guid Id { get; set; }
-        
+
         public string Name { get; set; }
-       
+
 
         public decimal Length { get; set; }
-       
+
 
         public decimal Width { get; set; }
-        
+
 
         public decimal Thickness { get; set; }
-       
+
 
         public decimal Volume { get; set; }
-        
+
 
         public string Type { get; set; }
-       
+
 
         public decimal Price { get; set; }
         public string? Equipment { get; set; }
         public string? imgPath { get; set; }
-      
+
 
         public bool IsRented { get; set; }
         public DateTime? RentedDate { get; set; }
 
-       
+
 
         public byte[] RowVersion { get; set; }
     }
 
 
-
-
+    public async Task Rent(HttpClient client, string userId, Guid id)
+    {
+        return Ok(await client.GetStringAsync($"https://localhost:7154/rent?userId={userId}&id={id}"));
+    }
+    
 }
