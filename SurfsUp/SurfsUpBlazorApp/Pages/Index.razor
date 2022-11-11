@@ -1,9 +1,100 @@
 ﻿@page "/"
+@using Microsoft.AspNetCore.Mvc
+@using System.Security.Claims;
+@using Microsoft.AspNetCore.Mvc.Rendering;
+@using Microsoft.EntityFrameworkCore;
+@using Microsoft.AspNetCore.Authorization;
+@using System.Data;
+@inject HttpClient Http
+
+
 
 <PageTitle>Index</PageTitle>
 
-<h1>Hello, world!</h1>
+@if (boards == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>BoardIMG</th>
+                <th>Name</th>
+                <th>Length</th>
+                <th>Width</th>
+                <th>Thickness</th>
+                <th>Volume</th>
+                <th>Type</th>
+                <th>Price</th>
+                <th>Equipment</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var board in boards)
+            {
+                <tr>
+                    <td><img src="@board.imgPath" width="60" length="60" /></td>
+                    <td>@board.Name</td>
+                    <td>@board.Length</td>
+                    <td>@board.Width</td>
+                    <td>@board.Thickness</td>
+                    <td>@board.Volume</td>
+                    <td>@board.Type</td>
+                    <td>@board.Price</td>
+                    <td>@board.Equipment</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    }
+@code{
 
-Welcome to your new app.
 
-<SurveyPrompt Title="How is Blazor working for you?" />
+    private Board[]? boards;
+
+    protected override async Task OnInitializedAsync()
+    {
+        boards = await Http.GetFromJsonAsync<Board[]>("https://localhost:7154/Index");
+    }
+    
+    public class Board
+    {
+        public Guid Id { get; set; }
+        
+        public string Name { get; set; }
+       
+
+        public decimal Length { get; set; }
+       
+
+        public decimal Width { get; set; }
+        
+
+        public decimal Thickness { get; set; }
+       
+
+        public decimal Volume { get; set; }
+        
+
+        public string Type { get; set; }
+       
+
+        public decimal Price { get; set; }
+        public string? Equipment { get; set; }
+        public string? imgPath { get; set; }
+      
+
+        public bool IsRented { get; set; }
+        public DateTime? RentedDate { get; set; }
+
+       
+
+        public byte[] RowVersion { get; set; }
+    }
+
+
+
+
+}
