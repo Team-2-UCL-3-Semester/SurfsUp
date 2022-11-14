@@ -13,12 +13,5 @@ namespace SurfsUp.APIs
         {
             return Ok(await client.GetStringAsync($"https://localhost:7154/rent?userId={userId}&id={id}"));
         }
-        [HttpGet("Index")]
-        public async Task<IActionResult> Index([FromForm] HttpClient client)
-        {
-            client.BaseAddress = new Uri("https://localhost:7154");
-            return Ok(await client.GetStringAsync("/Index"));
-        }
-
     }
 }
