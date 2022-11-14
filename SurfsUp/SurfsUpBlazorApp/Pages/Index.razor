@@ -7,7 +7,7 @@
 @using System.Data;
 @inject HttpClient Http
 @inject AuthenticationStateProvider GetAuthenticationStateAsync
-
+@inject NavigationManager navManager
 
 
 <PageTitle>Index</PageTitle>
@@ -35,20 +35,23 @@ else
         <tbody>
             @foreach (var board in boards)
             {
-                <tr>
-                    <td><img src="@board.imgPath" width="60" length="60" /></td>
-                    <td>@board.Name</td>
-                    <td>@board.Length</td>
-                    <td>@board.Width</td>
-                    <td>@board.Thickness</td>
-                    <td>@board.Volume</td>
-                    <td>@board.Type</td>
-                    <td>@board.Price</td>
-                    <td>@board.Equipment</td>
-                    <td>
-                        <button class="btn btn-primary" @onclick="()=>StartRenting(board.Id)">Lej</button>
-                    </td>
-                </tr>
+                @if(board.IsRented == false)
+                {
+                    <tr>
+                        <td><img src="@board.imgPath" width="60" length="60"/></td>
+                        <td>@board.Name</td>
+                        <td>@board.Length</td>
+                        <td>@board.Width</td>
+                        <td>@board.Thickness</td>
+                        <td>@board.Volume</td>
+                        <td>@board.Type</td>
+                        <td>@board.Price</td>
+                        <td>@board.Equipment</td>
+                        <td>
+                            <button class="btn btn-primary" @onclick="()=>StartRenting(board.Id)">Lej</button>
+                        </td>
+                    </tr>
+                }
             }
         </tbody>
     </table>
@@ -57,6 +60,12 @@ else
     private Board[]? boards;
 
     protected override async Task OnInitializedAsync()
+    {
+        await Http.GetStringAsync("https://localhost:7154/check");
+        await GetBoards();
+    }
+
+    public async Task GetBoards()
     {
         boards = await Http.GetFromJsonAsync<Board[]>("https://localhost:7154/Index");
     }
@@ -106,6 +115,7 @@ else
     public async Task Rent(HttpClient client, string userId, Guid id)
     {   
         await client.GetStringAsync($"https://localhost:7154/rent?userId={userId}&id={id}");
+        await GetBoards();
+        navManager.NavigateTo("/Confirmation");
     }
-    
 }
