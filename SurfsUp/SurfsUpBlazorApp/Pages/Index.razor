@@ -6,6 +6,7 @@
 @using Microsoft.AspNetCore.Authorization;
 @using System.Data;
 @inject HttpClient Http
+@inject AuthenticationStateProvider GetAuthenticationStateAsync
 
 
 
@@ -45,7 +46,7 @@ else
                     <td>@board.Price</td>
                     <td>@board.Equipment</td>
                     <td>
-                        <button class="btn btn-primary" @onclick="Rent(Http, id1, id2 )">Rent</button>
+                        <button class="btn btn-primary" @onclick="()=>StartRenting(board.Id)">Lej</button>
                     </td>
                 </tr>
             }
@@ -53,11 +54,6 @@ else
     </table>
     }
 @code{
-
-    string id1 = "5d761615-2ece-4fd8-9e05-4cd770868859";
-    public static readonly Guid id2 = new Guid("42675172-DBAD-421F-A55E-4014D9EA56BC");
-
-
     private Board[]? boards;
 
     protected override async Task OnInitializedAsync()
@@ -100,10 +96,16 @@ else
         public byte[] RowVersion { get; set; }
     }
 
+    public async void StartRenting(Guid boardId)
+    {
+        var authstate = await GetAuthenticationStateAsync.GetAuthenticationStateAsync();
+        var user = authstate.User.Claims.First().Value;
+        await Rent(Http, user, boardId);
+    }
 
     public async Task Rent(HttpClient client, string userId, Guid id)
-    {
-        return Ok(await client.GetStringAsync($"https://localhost:7154/rent?userId={userId}&id={id}"));
+    {   
+        await client.GetStringAsync($"https://localhost:7154/rent?userId={userId}&id={id}");
     }
     
 }
