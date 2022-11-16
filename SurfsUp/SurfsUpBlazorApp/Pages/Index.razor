@@ -18,6 +18,10 @@
 }
 else
 {
+
+    <input @bind="SearchWord" type="text"/>
+    <button class="btn btn-primary" @onclick="Search">Søg</button>
+
     <table class="table">
         <thead>
             <tr>
@@ -35,22 +39,25 @@ else
         <tbody>
             @foreach (var board in boards)
             {
-                @if(board.IsRented == false)
+                if(board != null)
                 {
-                    <tr>
-                        <td><img src="@board.imgPath" width="60" length="60"/></td>
-                        <td>@board.Name</td>
-                        <td>@board.Length</td>
-                        <td>@board.Width</td>
-                        <td>@board.Thickness</td>
-                        <td>@board.Volume</td>
-                        <td>@board.Type</td>
-                        <td>@board.Price</td>
-                        <td>@board.Equipment</td>
-                        <td>
-                            <button class="btn btn-primary" @onclick="()=>StartRenting(board.Id)">Lej</button>
-                        </td>
-                    </tr>
+                    @if (board.IsRented == false)
+                    {
+                        <tr>
+                            <td><img src="@board.imgPath" width="60" length="60" /></td>
+                            <td>@board.Name</td>
+                            <td>@board.Length</td>
+                            <td>@board.Width</td>
+                            <td>@board.Thickness</td>
+                            <td>@board.Volume</td>
+                            <td>@board.Type</td>
+                            <td>@board.Price</td>
+                            <td>@board.Equipment</td>
+                            <td>
+                                <button class="btn btn-primary" @onclick="()=>StartRenting(board.Id)">Lej</button>
+                            </td>
+                        </tr>
+                    }
                 }
             }
         </tbody>
@@ -58,6 +65,9 @@ else
     }
 @code{
     private Board[]? boards;
+
+    [Parameter]
+    public string SearchWord { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -117,5 +127,27 @@ else
         await client.GetStringAsync($"https://localhost:7154/rent?userId={userId}&id={id}");
         await GetBoards();
         navManager.NavigateTo("/Confirmation");
+    }
+    public void Search()
+    {
+        Board[] searchedBoards = new Board[boards.Length];
+        int currentArraySize = 0;
+
+        string search = SearchWord.ToUpper();
+
+        if(SearchWord == null)
+        {
+            SearchWord = "";
+        }
+
+        for (int i = 0; i < boards.Length; i++)
+        {
+            if(boards[i].Name.ToUpper().Contains(search) || boards[i].Type.ToUpper().Contains(search))
+            {
+                searchedBoards[currentArraySize] = boards[i];
+                currentArraySize++;
+            }
+        }
+        boards = searchedBoards;
     }
 }
