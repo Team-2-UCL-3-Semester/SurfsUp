@@ -66,18 +66,25 @@ else
 @code{
     private Board[]? boards;
 
+    //Array of temporary boards to reset the value of the "boards" array when searching
+    private Board[]? tempBoards;
+
     [Parameter]
     public string SearchWord { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
+        //API call that un-rents rented boards if the rent times have expired
         await Http.GetStringAsync("https://localhost:7154/check");
         await GetBoards();
     }
 
     public async Task GetBoards()
     {
+        //Sets the boards array so the boards show up on screen
         boards = await Http.GetFromJsonAsync<Board[]>("https://localhost:7154/Index");
+
+        tempBoards = boards;
     }
 
     public class Board
@@ -130,9 +137,12 @@ else
     }
     public void Search()
     {
+        //Resetting the boards array so the user can search between all boards and not the preveously searched boards
+        boards = tempBoards;
         Board[] searchedBoards = new Board[boards.Length];
         int currentArraySize = 0;
 
+        //Converting the searched words to upper so the program wont care about small or big letters
         string search = SearchWord.ToUpper();
 
         if(SearchWord == null)
@@ -142,6 +152,7 @@ else
 
         for (int i = 0; i < boards.Length; i++)
         {
+            //Converting the board names to upper so the program wont care about small or big letters like before
             if(boards[i].Name.ToUpper().Contains(search) || boards[i].Type.ToUpper().Contains(search))
             {
                 searchedBoards[currentArraySize] = boards[i];
