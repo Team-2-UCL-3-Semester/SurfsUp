@@ -2,14 +2,12 @@
 @using Microsoft.AspNetCore.SignalR.Client
 @inject NavigationManager Navigation
 @implements IAsyncDisposable
+@inject AuthenticationStateProvider GetAutenticationStateAsync
 
-<PageTitle>Index</PageTitle>
+<PageTitle>Chat</PageTitle>
 
 <div class="form-group">
-    <label>
-        User:
-        <input @bind="userInput" />
-    </label>
+    <div class="form-group">@userName</div>
 </div>
 <div class="form-group">
     <label>
@@ -28,21 +26,31 @@
     }
 </ul>
 
+
+
 @code {
     private HubConnection? hubConnection;
     private List<string> messages = new List<string>();
     private string? userInput;
     private string? messageInput;
+    [Parameter]
+    public string userName{ get; set; }
 
     protected override async Task OnInitializedAsync()
     {
+        var user = await GetAutenticationStateAsync.GetAuthenticationStateAsync();
+
+        if(user.User.Identity.IsAuthenticated == true){
+            userName = user.User.Identity.Name;
+        }
+
         hubConnection = new HubConnectionBuilder()
             .WithUrl(Navigation.ToAbsoluteUri("/chathubs"))
             .Build();
 
-        hubConnection.On<string, string>("ReceiveMessage", (user, message) =>
+        hubConnection.On<string, string>("ReceiveMessage", (userName, message) =>
         {
-            var encodedMsg = $"{user}: {message}";
+            var encodedMsg = $"{userName}: {message}";
             messages.Add(encodedMsg);
             InvokeAsync(StateHasChanged);
         });
@@ -54,7 +62,7 @@
     {
         if (hubConnection is not null)
         {
-            await hubConnection.SendAsync("SendMessage", userInput, messageInput);
+            await hubConnection.SendAsync("SendMessage", userName, messageInput);
         }
     }
 
