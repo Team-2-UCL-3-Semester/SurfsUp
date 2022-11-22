@@ -51,11 +51,14 @@ else
 
     private Root forecasts;
     private string Days = "";
+
+    // Initializes this method when u go in on the page
     protected override async Task OnInitializedAsync()
     {
         var json = await Http.GetStringAsync($"https://api.weatherbit.io/v2.0/forecast/daily?lat=55.39&lon=10.38&days=7&key=ef12c25a505f4361a114194f56515013");
         forecasts = JsonSerializer.Deserialize<Root>(json);
     }
+    // This method is run when u click the button the page
     public async Task Search()
     {
         var json = await Http.GetStringAsync($"https://api.weatherbit.io/v2.0/forecast/daily?lat=55.39&lon=10.38&days={Days}&key=ef12c25a505f4361a114194f56515013");
