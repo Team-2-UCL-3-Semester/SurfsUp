@@ -64,6 +64,12 @@ else
                             <td>
                                 <button class="btn btn-primary" @onclick="()=>StartRenting(board.Id)">Lej</button>
                             </td>
+							<td>
+                            @if (AuthenticationStateProvider.GetAuthenticationStateAsync().Result.User.IsInRole("Admin"))
+	                        {
+		                        <button class="btn btn-primary" @onclick="()=>EditBoard(board.Id)">Edit</button>
+                            }
+                            </td>
                         </tr>
                     }
                 }
@@ -169,8 +175,16 @@ else
         }
         boards = searchedBoards;
     }
+	
+	//CRUD
+	
 	public void AddOwnBoard()
 	{
 		navManager.NavigateTo("/AddOwnBoard");
+	}
+	
+	public void EditBoard(Guid id)
+	{
+		navManager.NavigateTo($"/EditBoard/{id}");
 	}
 }

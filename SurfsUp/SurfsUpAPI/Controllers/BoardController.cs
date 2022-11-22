@@ -55,46 +55,74 @@ namespace SurfsUpAPI.Controllers
             return Ok();
         }
 
-		// GET: BoardController/Edit/5
-		public ActionResult Edit(int id)
+        // GET: BoardController/Edit/5
+        public async Task<IActionResult> Edit(Guid? id)
+        {
+            return View();
+        }
+
+
+        private bool BoardExists(Guid id)
+        {
+            return (_context.Board?.Any(e => e.Id == id)).GetValueOrDefault();
+        }
+
+
+        // Virker ikke lige nu, kommer stadig ned til code 200 alligevel.
+        // Skal gennemgåes
+        [HttpGet("Edit")]
+        public async Task<IActionResult> Edit(Guid id, [Bind("Id,Name,Length,Width,Thickness,Volume,Type,Price,Equipment,imgPath")] Board board)
+        {
+            if (id != board.Id)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Update(board);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!BoardExists(board.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+            }
+            return Ok();
+        }
+
+        // GET: BoardController/Delete/5
+        public ActionResult Delete(int id)
 		{
 			return View();
 		}
 
-		// POST: BoardController/Edit/5
-		[HttpPost]
-		[ValidateAntiForgeryToken]
-		public ActionResult Edit(int id, IFormCollection collection)
-		{
-			try
-			{
-				return RedirectToAction(nameof(Index));
-			}
-			catch
-			{
-				return View();
-			}
-		}
+        //Delete works via API 22-11-2022
+        // POST: BoardController/Delete/5
+        [HttpPost("Delete")]
+        public async Task<IActionResult> Delete(Guid id)
+        {
+            if (_context.Board == null)
+            {
+                return Problem("Entity set 'SurfsUpContext.Board' is null.");
+            }
+            var board = await _context.Board.FindAsync(id);
+            if (board != null)
+            {
+                _context.Board.Remove(board);
+            }
 
-		// GET: BoardController/Delete/5
-		public ActionResult Delete(int id)
-		{
-			return View();
-		}
-
-		// POST: BoardController/Delete/5
-		[HttpPost]
-		[ValidateAntiForgeryToken]
-		public ActionResult Delete(int id, IFormCollection collection)
-		{
-			try
-			{
-				return RedirectToAction(nameof(Index));
-			}
-			catch
-			{
-				return View();
-			}
-		}
-	}
+            await _context.SaveChangesAsync();
+            return Ok();
+        }
+    }
 }
