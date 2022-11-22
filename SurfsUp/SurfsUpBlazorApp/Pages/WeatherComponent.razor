@@ -1,5 +1,7 @@
 ﻿@page "/weather"
-@using Newtonsoft.Json
+@using System.Text.Json
+@using System.Text.Json.Serialization;
+
 @inject HttpClient Http
 
 <PageTitle>Weather forecast</PageTitle>
@@ -8,10 +10,9 @@
 
 <p>This component demonstrates fetching data from the server.</p>
 
-<input type="text" placeholder="city" @bind-value="searchCity" />
-<input type="text" placeholder="StartDate" @bind-value="startDate"  />
-<input type="text" placeholder="EndDate" @bind-value="endDate" />
-<button @onclick="SearchCity">Search</button>
+<input type="text" placeholder="Days" @bind-value="Days" />
+
+<button @onclick="Search">Search</button>
 @if (forecasts == null)
 {
     <p><em>Loading...</em></p>
@@ -21,49 +22,46 @@ else
     <table class="table">
         <thead>
             <tr>
-                <th>Date</th>
-                <th>Windspeed</th>
-                <th>UV index</th>
-                <th>Temperature</th>
+                <th>time</th>
+                <th>Temp</th>
+                <th>Chance for rain</th>
+                <th>Rain amount</th>
+                <th>Description</th>
+
             </tr>
         </thead>
         <tbody>
-            @foreach (var forecasts in forecasts.days)
+            @foreach (var forecast in forecasts.data)
             {
                 <tr>
-                    <td>@(new DateTime().AddYears(1969).AddSeconds(forecasts.datetimeEpoch))</td>
-                    <td>@forecasts.windspeed</td>
-                    <td>@forecasts.uvindex</td>
-                    <td>@Math.Round(forecasts.feelslike)</td>
+                    <td>@forecast.datetime</td>
+                    <td>@forecast.temp</td>
+                    <td>@forecast.pop</td>
+                    <td>@forecast.precip</td>
+                    <td>@forecast.weather.description</td>
                 </tr>
             }
+
         </tbody>
+
     </table>
 }
 
 @code {
 
-
-
-
-
-    private SRoot forecasts;
-
-    [Parameter]
-    public string? searchCity { get; set; }
-    public string? startDate;
-    public string? endDate;
-    public string key = "7BNRT6CGQ67M4HMLNNL2Q7FXE";
-    private async void SearchCity()
+    private Root forecasts;
+    private string Days = "";
+    protected override async Task OnInitializedAsync()
     {
-        // byt om på disse 2 calls
-        var city = await Http.GetFromJsonAsync<SRoot>("https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/Odense,DK/2022-11-20/2022-11-22?key=7BNRT6CGQ67M4HMLNNL2Q7FXE");
-    if (city != null)
-        {
-            forecasts = await Http.GetFromJsonAsync<SRoot>("https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/" + searchCity + ",DK/" + startDate + "/" + endDate + "?key=" + key);
-        }
-
+        var json = await Http.GetStringAsync($"https://api.weatherbit.io/v2.0/forecast/daily?lat=55.39&lon=10.38&days=7&key=ef12c25a505f4361a114194f56515013");
+        forecasts = JsonSerializer.Deserialize<Root>(json);
     }
+    public async Task Search()
+    {
+        var json = await Http.GetStringAsync($"https://api.weatherbit.io/v2.0/forecast/daily?lat=55.39&lon=10.38&days={Days}&key=ef12c25a505f4361a114194f56515013");
+        forecasts = JsonSerializer.Deserialize<Root>(json);
+    }
+
     //[Parameter]
     //Root myDeserializedClass = JsonConvert.DeserializeObject<Root>(myJsonResponse);
 
@@ -71,195 +69,66 @@ else
 
     // Root myDeserializedClass = JsonConvert.DeserializeObject<Root>(myJsonResponse);
     // Root myDeserializedClass = JsonConvert.DeserializeObject<Root>(myJsonResponse);
-    public class _06119099999
-    {
-        public double distance { get; set; }
-        public double latitude { get; set; }
-        public double longitude { get; set; }
-        public int useCount { get; set; }
-        public string id { get; set; }
-        public string name { get; set; }
-        public int quality { get; set; }
-        public double contribution { get; set; }
-    }
-
-    public class _06120099999
-    {
-        public double distance { get; set; }
-        public double latitude { get; set; }
-        public double longitude { get; set; }
-        public int useCount { get; set; }
-        public string id { get; set; }
-        public string name { get; set; }
-        public int quality { get; set; }
-        public double contribution { get; set; }
-    }
-
-    public class _06126099999
-    {
-        public double distance { get; set; }
-        public double latitude { get; set; }
-        public double longitude { get; set; }
-        public int useCount { get; set; }
-        public string id { get; set; }
-        public string name { get; set; }
-        public int quality { get; set; }
-        public double contribution { get; set; }
-    }
-
-    public class _06135099999
-    {
-        public double distance { get; set; }
-        public double latitude { get; set; }
-        public double longitude { get; set; }
-        public int useCount { get; set; }
-        public string id { get; set; }
-        public string name { get; set; }
-        public int quality { get; set; }
-        public double contribution { get; set; }
-    }
-
-    public class _06136099999
-    {
-        public double distance { get; set; }
-        public double latitude { get; set; }
-        public double longitude { get; set; }
-        public int useCount { get; set; }
-        public string id { get; set; }
-        public string name { get; set; }
-        public int quality { get; set; }
-        public double contribution { get; set; }
-    }
-
-    public class _06159099999
-    {
-        public double distance { get; set; }
-        public double latitude { get; set; }
-        public double longitude { get; set; }
-        public int useCount { get; set; }
-        public string id { get; set; }
-        public string name { get; set; }
-        public int quality { get; set; }
-        public double contribution { get; set; }
-    }
-
-    public class D8529
-    {
-        public double distance { get; set; }
-        public double latitude { get; set; }
-        public double longitude { get; set; }
-        public int useCount { get; set; }
-        public string id { get; set; }
-        public string name { get; set; }
-        public int quality { get; set; }
-        public double contribution { get; set; }
-    }
-
-    public class Day
-    {
-        public string datetime { get; set; }
-        public int datetimeEpoch { get; set; }
-        public double tempmax { get; set; }
-        public double tempmin { get; set; }
-        public double temp { get; set; }
-        public double feelslikemax { get; set; }
-        public double feelslikemin { get; set; }
-        public double feelslike { get; set; }
-        public double dew { get; set; }
-        public double humidity { get; set; }
-        public double precip { get; set; }
-        public double precipprob { get; set; }
-        public double precipcover { get; set; }
-        public List<string> preciptype { get; set; }
-        public double snow { get; set; }
-        public double snowdepth { get; set; }
-        public double? windgust { get; set; }
-        public double windspeed { get; set; }
-        public double winddir { get; set; }
-        public double pressure { get; set; }
-        public double cloudcover { get; set; }
-        public double visibility { get; set; }
-        public double solarradiation { get; set; }
-        public double solarenergy { get; set; }
-        public double uvindex { get; set; }
-        public string sunrise { get; set; }
-        public int sunriseEpoch { get; set; }
-        public string sunset { get; set; }
-        public int sunsetEpoch { get; set; }
-        public double moonphase { get; set; }
-        public string conditions { get; set; }
-        public string description { get; set; }
-        public string icon { get; set; }
-        public List<string> stations { get; set; }
-        public string source { get; set; }
-        public List<Hour> hours { get; set; }
-        public double? tzoffset { get; set; }
-    }
-
-    public class Hour
-    {
-        public string datetime { get; set; }
-        public int datetimeEpoch { get; set; }
-        public double temp { get; set; }
-        public double feelslike { get; set; }
-        public double humidity { get; set; }
-        public double dew { get; set; }
-        public double precip { get; set; }
-        public double precipprob { get; set; }
-        public double? snow { get; set; }
-        public double? snowdepth { get; set; }
-        public List<string> preciptype { get; set; }
-        public double? windgust { get; set; }
-        public double windspeed { get; set; }
-        public double winddir { get; set; }
-        public double? pressure { get; set; }
-        public double? visibility { get; set; }
-        public double cloudcover { get; set; }
-        public double solarradiation { get; set; }
-        public double? solarenergy { get; set; }
-        public double uvindex { get; set; }
-        public string conditions { get; set; }
-        public string icon { get; set; }
-        public List<string> stations { get; set; }
-        public string source { get; set; }
-        public double? tzoffset { get; set; }
-    }
-
-    public class SRoot
-    {
-        public int queryCost { get; set; }
-        public double latitude { get; set; }
-        public double longitude { get; set; }
-        public string resolvedAddress { get; set; }
-        public string address { get; set; }
-        public string timezone { get; set; }
-        public double tzoffset { get; set; }
-        public List<Day> days { get; set; }
-        public Stations stations { get; set; }
-    }
-
-    public class Stations
-    {
-        [JsonProperty("06119099999")]
-        public _06119099999 _06119099999 { get; set; }
-        public D8529 D8529 { get; set; }
-
-        [JsonProperty("06126099999")]
-        public _06126099999 _06126099999 { get; set; }
-
-        [JsonProperty("06135099999")]
-        public _06135099999 _06135099999 { get; set; }
-
-        [JsonProperty("06120099999")]
-        public _06120099999 _06120099999 { get; set; }
-
-        [JsonProperty("06159099999")]
-        public _06159099999 _06159099999 { get; set; }
-
-        [JsonProperty("06136099999")]
-        public _06136099999 _06136099999 { get; set; }
-    }
-
     // Root myDeserializedClass = JsonConvert.DeserializeObject<Root>(myJsonResponse);
-    
+    public class Datum
+    {
+        public double app_max_temp { get; set; }
+        public double app_min_temp { get; set; }
+        public int clouds { get; set; }
+        public int clouds_hi { get; set; }
+        public int clouds_low { get; set; }
+        public int clouds_mid { get; set; }
+        public string datetime { get; set; }
+        public double dewpt { get; set; }
+        public double high_temp { get; set; }
+        public double low_temp { get; set; }
+        public object max_dhi { get; set; }
+        public double max_temp { get; set; }
+        public double min_temp { get; set; }
+        public double moon_phase { get; set; }
+        public double moon_phase_lunation { get; set; }
+        public int moonrise_ts { get; set; }
+        public int moonset_ts { get; set; }
+        public double ozone { get; set; }
+        public int pop { get; set; }
+        public double precip { get; set; }
+        public double pres { get; set; }
+        public int rh { get; set; }
+        public double slp { get; set; }
+        public double snow { get; set; }
+        public double snow_depth { get; set; }
+        public int sunrise_ts { get; set; }
+        public int sunset_ts { get; set; }
+        public double temp { get; set; }
+        public int ts { get; set; }
+        public double uv { get; set; }
+        public string valid_date { get; set; }
+        public double vis { get; set; }
+        public Weather weather { get; set; }
+        public string wind_cdir { get; set; }
+        public string wind_cdir_full { get; set; }
+        public int wind_dir { get; set; }
+        public double wind_gust_spd { get; set; }
+        public double wind_spd { get; set; }
+    }
+
+    public class Root
+    {
+        public string city_name { get; set; }
+        public string country_code { get; set; }
+        public List<Datum> data { get; set; }
+        public double lat { get; set; }
+        public double lon { get; set; }
+        public string state_code { get; set; }
+        public string timezone { get; set; }
+    }
+
+    public class Weather
+    {
+        public string description { get; set; }
+        public int code { get; set; }
+        public string icon { get; set; }
+    }
+
+
 }
