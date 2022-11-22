@@ -1,9 +1,164 @@
 ﻿@page "/"
+@using Microsoft.AspNetCore.Mvc
+@using System.Security.Claims;
+@using Microsoft.AspNetCore.Mvc.Rendering;
+@using Microsoft.EntityFrameworkCore;
+@using Microsoft.AspNetCore.Authorization;
+@using System.Data;
+@inject HttpClient Http
+@inject AuthenticationStateProvider GetAuthenticationStateAsync
+@inject NavigationManager navManager
+
 
 <PageTitle>Index</PageTitle>
 
-<h1>Hello, world!</h1>
+@if (boards == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
 
-Welcome to your new app.
+    <input @bind="SearchWord" type="text"/>
+    <button class="btn btn-primary" @onclick="Search">Søg</button>
 
-<SurveyPrompt Title="How is Blazor working for you?" />
+    <table class="table">
+        <thead>
+            <tr>
+                <th>BoardIMG</th>
+                <th>Name</th>
+                <th>Length</th>
+                <th>Width</th>
+                <th>Thickness</th>
+                <th>Volume</th>
+                <th>Type</th>
+                <th>Price</th>
+                <th>Equipment</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var board in boards)
+            {
+                if(board != null)
+                {
+                    @if (board.IsRented == false)
+                    {
+                        <tr>
+                            <td><img src="@board.imgPath" width="60" length="60" /></td>
+                            <td>@board.Name</td>
+                            <td>@board.Length</td>
+                            <td>@board.Width</td>
+                            <td>@board.Thickness</td>
+                            <td>@board.Volume</td>
+                            <td>@board.Type</td>
+                            <td>@board.Price</td>
+                            <td>@board.Equipment</td>
+                            <td>
+                                <button class="btn btn-primary" @onclick="()=>StartRenting(board.Id)">Lej</button>
+                            </td>
+                        </tr>
+                    }
+                }
+            }
+        </tbody>
+    </table>
+    }
+@code{
+    private Board[]? boards;
+
+    //Array of temporary boards to reset the value of the "boards" array when searching
+    private Board[]? tempBoards;
+
+    [Parameter]
+    public string SearchWord { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        //API call that un-rents rented boards if the rent times have expired
+        await Http.GetStringAsync("https://localhost:7154/check");
+        await GetBoards();
+    }
+
+    public async Task GetBoards()
+    {
+        //Sets the boards array so the boards show up on screen
+        boards = await Http.GetFromJsonAsync<Board[]>("https://localhost:7154/Index");
+
+        tempBoards = boards;
+    }
+
+    public class Board
+    {
+        public Guid Id { get; set; }
+
+        public string Name { get; set; }
+
+
+        public decimal Length { get; set; }
+
+
+        public decimal Width { get; set; }
+
+
+        public decimal Thickness { get; set; }
+
+
+        public decimal Volume { get; set; }
+
+
+        public string Type { get; set; }
+
+
+        public decimal Price { get; set; }
+        public string? Equipment { get; set; }
+        public string? imgPath { get; set; }
+
+
+        public bool IsRented { get; set; }
+        public DateTime? RentedDate { get; set; }
+
+
+
+        public byte[] RowVersion { get; set; }
+    }
+
+    public async void StartRenting(Guid boardId)
+    {
+        var authstate = await GetAuthenticationStateAsync.GetAuthenticationStateAsync();
+        var user = authstate.User.Claims.First().Value;
+        await Rent(Http, user, boardId);
+    }
+
+    public async Task Rent(HttpClient client, string userId, Guid id)
+    {   
+        await client.GetStringAsync($"https://localhost:7154/rent?userId={userId}&id={id}");
+        await GetBoards();
+        navManager.NavigateTo("/Confirmation");
+    }
+    public void Search()
+    {
+        //Resetting the boards array so the user can search between all boards and not the preveously searched boards
+        boards = tempBoards;
+        Board[] searchedBoards = new Board[boards.Length];
+        int currentArraySize = 0;
+
+        //Converting the searched words to upper so the program wont care about small or big letters
+        string search = SearchWord.ToUpper();
+
+        if(SearchWord == null)
+        {
+            SearchWord = "";
+        }
+
+        for (int i = 0; i < boards.Length; i++)
+        {
+            //Converting the board names to upper so the program wont care about small or big letters like before
+            if(boards[i].Name.ToUpper().Contains(search) || boards[i].Type.ToUpper().Contains(search))
+            {
+                searchedBoards[currentArraySize] = boards[i];
+                currentArraySize++;
+            }
+        }
+        boards = searchedBoards;
+    }
+}

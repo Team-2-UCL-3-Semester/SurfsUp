@@ -4,9 +4,9 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SurfsUp.Data;
 using SurfsUp.Models;
-using SurfsUp.APIs;
 using Microsoft.AspNetCore.Authorization;
 using System.Data;
+using SurfsUp.APIs;
 
 namespace SurfsUp.Controllers
 {
