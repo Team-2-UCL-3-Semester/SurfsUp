@@ -24,7 +24,7 @@ else
     <input @bind="SearchWord" type="text"/>
     <button class="btn btn-primary" @onclick="Search">Søg</button>
     //if user is logged in this button will be visible
-	@if (AuthenticationStateProvider.GetAuthenticationStateAsync().Result.User.Identity.IsAuthenticated)
+	@if (AuthenticationStateProvider.GetAuthenticationStateAsync().Result.User.IsInRole("Admin"))
 	{
 		<button style="float:right" class="btn btn-primary" @onclick="AddOwnBoard">Udlej dit board</button>
     }
