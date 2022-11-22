@@ -2,9 +2,8 @@
 @using Microsoft.AspNetCore.SignalR.Client
 @inject NavigationManager Navigation
 @implements IAsyncDisposable
-@using System.Data
 
-<PageTitle>ChatHub</PageTitle>
+<PageTitle>Index</PageTitle>
 
 <div class="form-group">
     <label>
@@ -35,17 +34,15 @@
     private string? userInput;
     private string? messageInput;
 
-    
-
-    protected override async Task OnInitializedAsync(string userId)
+    protected override async Task OnInitializedAsync()
     {
         hubConnection = new HubConnectionBuilder()
-            .WithUrl(Navigation.ToAbsoluteUri("/chathub"))
+            .WithUrl(Navigation.ToAbsoluteUri("/chathubs"))
             .Build();
 
-        hubConnection.On<string, string>("ReceiveMessage", (userId, message) =>
+        hubConnection.On<string, string>("ReceiveMessage", (user, message) =>
         {
-            var encodedMsg = $"{userId}: {message}";
+            var encodedMsg = $"{user}: {message}";
             messages.Add(encodedMsg);
             InvokeAsync(StateHasChanged);
         });
@@ -53,11 +50,11 @@
         await hubConnection.StartAsync();
     }
 
-    private async Task Send(string userId)
+    private async Task Send()
     {
         if (hubConnection is not null)
         {
-            await hubConnection.SendAsync("SendMessage", userId, messageInput);
+            await hubConnection.SendAsync("SendMessage", userInput, messageInput);
         }
     }
 
