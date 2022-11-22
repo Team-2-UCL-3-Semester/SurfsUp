@@ -5,10 +5,12 @@
 @using Microsoft.EntityFrameworkCore;
 @using Microsoft.AspNetCore.Authorization;
 @using System.Data;
+@using Microsoft.AspNetCore.Http
 @inject HttpClient Http
 @inject AuthenticationStateProvider GetAuthenticationStateAsync
 @inject NavigationManager navManager
-
+@*@inject HttpContext HttpContext*@
+@inject AuthenticationStateProvider AuthenticationStateProvider
 
 <PageTitle>Index</PageTitle>
 
@@ -21,6 +23,12 @@ else
 
     <input @bind="SearchWord" type="text"/>
     <button class="btn btn-primary" @onclick="Search">Søg</button>
+    //if user is logged in this button will be visible
+	@if (AuthenticationStateProvider.GetAuthenticationStateAsync().Result.User.Identity.IsAuthenticated)
+	{
+		<button style="float:right" class="btn btn-primary" @onclick="AddOwnBoard">Udlej dit board</button>
+    }
+		
 
     <table class="table">
         <thead>
@@ -161,4 +169,8 @@ else
         }
         boards = searchedBoards;
     }
+	public void AddOwnBoard()
+	{
+		navManager.NavigateTo("/AddOwnBoard");
+	}
 }
