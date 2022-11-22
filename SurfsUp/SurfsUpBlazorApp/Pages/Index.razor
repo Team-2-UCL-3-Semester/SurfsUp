@@ -1,4 +1,4 @@
-﻿@page "/"
+﻿@page "/modalExample"
 @using Microsoft.AspNetCore.Mvc
 @using System.Security.Claims;
 @using Microsoft.AspNetCore.Mvc.Rendering;
@@ -8,6 +8,7 @@
 @inject HttpClient Http
 @inject AuthenticationStateProvider GetAuthenticationStateAsync
 @inject NavigationManager navManager
+@inject IModalService modal 
 
 
 <PageTitle>Index</PageTitle>
@@ -54,7 +55,7 @@ else
                             <td>@board.Price</td>
                             <td>@board.Equipment</td>
                             <td>
-                                <button class="btn btn-primary" @onclick="()=>StartRenting(board.Id)">Lej</button>
+                                <button @onclick="@(()=> modal.Show<DatePicker>("Vælg Dato"))" class="btn btn-primary" >Lej</button>
                             </td>
                         </tr>
                     }
