@@ -1,10 +1,12 @@
-﻿@page "/"
+﻿@page "//{Page:int}"
+@page "/"
 @using Microsoft.AspNetCore.Mvc
 @using System.Security.Claims;
 @using Microsoft.AspNetCore.Mvc.Rendering;
 @using Microsoft.EntityFrameworkCore;
 @using Microsoft.AspNetCore.Authorization;
 @using System.Data;
+@using Models
 @inject HttpClient Http
 @inject AuthenticationStateProvider GetAuthenticationStateAsync
 @inject NavigationManager navManager
@@ -37,7 +39,7 @@ else
             </tr>
         </thead>
         <tbody>
-            @foreach (var board in boards)
+            @foreach (var board in Students)
             {
                 if(board != null)
                 {
@@ -61,6 +63,9 @@ else
                 }
             }
         </tbody>
+        <tfoot>
+            <Paging PI="pagingInfo" PageClassesEnabled="true" PageClass="Paging" PageClassSelected="active"></Paging>
+        </tfoot>
     </table>
     }
 @code{
@@ -72,11 +77,19 @@ else
     [Parameter]
     public string SearchWord { get; set; }
 
+    [Parameter]
+    public int page { get; set; }
+
+    PagingInfo pagingInfo = new PagingInfo();
+
+    public IEnumerable<Board> Students { get; set; } = Enumerable.Empty<Board>();
+
     protected override async Task OnInitializedAsync()
     {
         //API call that un-rents rented boards if the rent times have expired
         await Http.GetStringAsync("https://localhost:7154/check");
         await GetBoards();
+        CreatePagingInfo();
     }
 
     public async Task GetBoards()
@@ -179,5 +192,19 @@ else
             }
         }
         boards = searchedBoards;
+    }
+    public void CreatePagingInfo()
+    {
+        var AllStudents = boards.ToList<Board>();
+
+        int PageSize = 5;
+        pagingInfo = new PagingInfo();
+        page = page == 0 ? 1 : page;
+        pagingInfo.CurrentPage = page;
+        pagingInfo.TotalItems = boards.Count();
+        pagingInfo.ItemsPerPage = PageSize;
+
+        var skip = PageSize * (Convert.ToInt32(page) - 1);
+        Students = AllStudents.Skip(skip).Take(PageSize).ToList();
     }
 }
