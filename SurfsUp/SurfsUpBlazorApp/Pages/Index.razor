@@ -95,8 +95,17 @@ else
 
     public async Task GetBoards()
     {
-        //Sets the boards array so the boards show up on screen
-        boards = await Http.GetFromJsonAsync<Board[]>("https://localhost:7154/Index");
+        var authstate = await GetAuthenticationStateAsync.GetAuthenticationStateAsync();
+        //Sets the boards array so the boards show up on screen. Uses api version 2 if the user isn't logged in
+        if(authstate.User.Identity.IsAuthenticated == true)
+        {
+            boards = await Http.GetFromJsonAsync<Board[]>("https://localhost:7154/Index");
+        }
+        else
+        {
+            boards = await Http.GetFromJsonAsync<Board[]>("https://localhost:7154/IndexV2?api-version=2.0");
+        }
+
 
         tempBoards = boards;
     }
@@ -139,8 +148,18 @@ else
     public async void StartRenting(Guid boardId)
     {
         var authstate = await GetAuthenticationStateAsync.GetAuthenticationStateAsync();
-        var user = authstate.User.Claims.First().Value;
-        await Rent(Http, user, boardId);
+
+        //Checks if the user is logged in, if not, it will set the userId to a guest account's userId
+        if (authstate.User.Identity.IsAuthenticated == true)
+        {
+            var user = authstate.User.Claims.First().Value;
+            await Rent(Http, user, boardId);
+        }
+        else
+        {
+            string user = "2ed315c0-1ca2-4a4b-aedf-70fa672ca7e8";
+            await Rent(Http, user, boardId);
+        }
     }
 
     public async Task Rent(HttpClient client, string userId, Guid id)

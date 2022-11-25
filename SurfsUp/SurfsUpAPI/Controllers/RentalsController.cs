@@ -9,6 +9,8 @@ namespace SurfsUpAPI.Controllers
     
     [ApiController]
     [Route("/")]
+    [ApiVersion("1.0")]
+    [ApiVersion("2.0")]
     public class RentalsController : ControllerBase
     {
         private readonly SurfsUpContext _context;
@@ -85,6 +87,7 @@ namespace SurfsUpAPI.Controllers
             await _context.SaveChangesAsync();
             return Ok();
         }
+
         [HttpGet("Index")]
         public IActionResult IndexV1()
         {
@@ -92,6 +95,15 @@ namespace SurfsUpAPI.Controllers
 
             return Ok(boards);
         }
-        
+
+        [HttpGet("IndexV2")]
+        [MapToApiVersion("2.0")]
+        public IActionResult IndexV2()
+        {
+            var boards = _context.Board.Where(s => !s.IsRented && s.Name.Contains("The"));
+
+            return Ok(boards);
+        }
+
     }
 }
