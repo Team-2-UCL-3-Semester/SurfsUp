@@ -11,7 +11,7 @@
 
 
 <PageTitle>Index</PageTitle>
-
+<head></head>
 @if (boards == null)
 {
     <p><em>Loading...</em></p>
@@ -19,7 +19,7 @@
 else
 {
 
-    <input @bind="SearchWord" type="text"/>
+    <input @bind="SearchWord" type="text" />
     <button class="btn btn-primary" @onclick="Search">Søg</button>
 
     <table class="table">
@@ -39,7 +39,7 @@ else
         <tbody>
             @foreach (var board in boards)
             {
-                if(board != null)
+                if (board != null)
                 {
                     @if (board.IsRented == false)
                     {
@@ -54,16 +54,47 @@ else
                             <td>@board.Price</td>
                             <td>@board.Equipment</td>
                             <td>
-                                <button class="btn btn-primary" @onclick="()=>StartRenting(board.Id)">Lej</button>
+                                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">Lej</button>
+                                @*<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">*@
                             </td>
                         </tr>
                     }
                 }
             }
+            <div>
+                <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="input-group date" data-provide="datepicker">
+                                    <input type="text" class="form-control">
+                                    <div class="input-group-addon">
+                                        <span class="glyphicon glyphicon-th"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary">Save changes</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
         </tbody>
     </table>
-    }
-@code{
+
+}
+
+@code {
     private Board[]? boards;
 
     //Array of temporary boards to reset the value of the "boards" array when searching
@@ -83,7 +114,7 @@ else
     {
         var authstate = await GetAuthenticationStateAsync.GetAuthenticationStateAsync();
         //Sets the boards array so the boards show up on screen. Uses api version 2 if the user isn't logged in
-        if(authstate.User.Identity.IsAuthenticated == true)
+        if (authstate.User.Identity.IsAuthenticated == true)
         {
             boards = await Http.GetFromJsonAsync<Board[]>("https://localhost:7154/Index");
         }
@@ -149,7 +180,7 @@ else
     }
 
     public async Task Rent(HttpClient client, string userId, Guid id)
-    {   
+    {
         await client.GetStringAsync($"https://localhost:7154/rent?userId={userId}&id={id}");
         await GetBoards();
         navManager.NavigateTo("/Confirmation");
@@ -164,7 +195,7 @@ else
         //Converting the searched words to upper so the program wont care about small or big letters
         string search = SearchWord.ToUpper();
 
-        if(SearchWord == null)
+        if (SearchWord == null)
         {
             SearchWord = "";
         }
@@ -172,7 +203,7 @@ else
         for (int i = 0; i < boards.Length; i++)
         {
             //Converting the board names to upper so the program wont care about small or big letters like before
-            if(boards[i].Name.ToUpper().Contains(search) || boards[i].Type.ToUpper().Contains(search))
+            if (boards[i].Name.ToUpper().Contains(search) || boards[i].Type.ToUpper().Contains(search))
             {
                 searchedBoards[currentArraySize] = boards[i];
                 currentArraySize++;
