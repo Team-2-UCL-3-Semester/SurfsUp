@@ -1,4 +1,7 @@
 ﻿@page "/weather"
+@using System.Text.Json
+@using System.Text.Json.Serialization;
+
 @inject HttpClient Http
 
 <PageTitle>Weather forecast</PageTitle>
@@ -7,8 +10,9 @@
 
 <p>This component demonstrates fetching data from the server.</p>
 
-<input type="text" placeholder="city" @bind-value="searchCity" />
-<button @onclick="SearchCity">Search</button>
+<input type="text" placeholder="Days" @bind-value="Days" />
+
+<button @onclick="Search">Search</button>
 @if (forecasts == null)
 {
     <p><em>Loading...</em></p>
@@ -18,163 +22,108 @@ else
     <table class="table">
         <thead>
             <tr>
-                <th>Date</th>
-                <th>Temp. (C)</th>
-                <th>Temp. (F)</th>
-                <th>Summary</th>
+                <th>time</th>
+                <th>Temp</th>
+                <th>Chance for rain</th>
+                <th>Rain amount</th>
+                <th>Description</th>
+
             </tr>
         </thead>
         <tbody>
-            @foreach (var forecast in forecasts.list)
+            @foreach (var forecast in forecasts.data)
             {
                 <tr>
-                    <td>@(new DateTime().AddYears(1969).AddSeconds(forecast.dt))</td>
-                    <td>@Math.Round(forecast.main.feels_like-273.15, 2)</td>
-                    <td>@Math.Round((forecast.main.feels_like-273.15)*1.8+32, 2)</td>
-                    <td>@forecast.weather.First().description</td>
+                    <td>@forecast.datetime</td>
+                    <td>@forecast.temp</td>
+                    <td>@forecast.pop</td>
+                    <td>@forecast.precip</td>
+                    <td>@forecast.weather.description</td>
                 </tr>
             }
+
         </tbody>
+
     </table>
 }
 
 @code {
 
     private Root forecasts;
-    [Parameter]
-    public string? searchCity { get; set; }
-    public string openWeatherKey = "ecd9bd8c407fdc37bce8946eb2ab119c";
-    private async void SearchCity()
-    {
-        var city = await Http.GetFromJsonAsync<SRoot>("https://openweathermap.org/data/2.5/find?q=" + searchCity + "&appid=439d4b804bc8187953eb36d2a8c26a02&units=metric");
-        if (city != null)
-        {
-            forecasts = await Http.GetFromJsonAsync<Root>("https://api.openweathermap.org/data/2.5/forecast?id=" + city.list.First().id + "&appid=" + openWeatherKey);
-        }
+    private string Days = "";
 
+    // Initializes this method when u go in on the page
+    protected override async Task OnInitializedAsync()
+    {
+        var json = await Http.GetStringAsync($"https://api.weatherbit.io/v2.0/forecast/daily?lat=55.39&lon=10.38&days=7&key=ef12c25a505f4361a114194f56515013");
+        forecasts = JsonSerializer.Deserialize<Root>(json);
     }
-    //[Parameter]
-    //Root myDeserializedClass = JsonConvert.DeserializeObject<Root>(myJsonResponse);
-
-
-
-    // Root myDeserializedClass = JsonConvert.DeserializeObject<Root>(myJsonResponse);
-    public class City
+    // This method is run when u click the button the page
+    public async Task Search()
     {
-        public int id { get; set; }
-        public string name { get; set; }
-        public Coord coord { get; set; }
-        public string country { get; set; }
-        public int population { get; set; }
-        public int timezone { get; set; }
-        public int sunrise { get; set; }
-        public int sunset { get; set; }
-
-
+        var json = await Http.GetStringAsync($"https://api.weatherbit.io/v2.0/forecast/daily?lat=55.39&lon=10.38&days={Days}&key=ef12c25a505f4361a114194f56515013");
+        forecasts = JsonSerializer.Deserialize<Root>(json);
     }
 
-    public class Clouds
+    public class Datum
     {
-
-    }
-
-    public class Coord
-    {
-        public double lat { get; set; }
-        public double lon { get; set; }
-    }
-
-    public class List
-    {
-        public int dt { get; set; }
-        public Main main { get; set; }
-        public List<Weather> weather { get; set; }
-        public Clouds clouds { get; set; }
-        public Wind wind { get; set; }
-        public int visibility { get; set; }
-        public double pop { get; set; }
-        public Rain rain { get; set; }
-        public Sys sys { get; set; }
-        public string dt_txt { get; set; }
-    }
-
-    public class Main
-    {
+        public double app_max_temp { get; set; }
+        public double app_min_temp { get; set; }
+        public int clouds { get; set; }
+        public int clouds_hi { get; set; }
+        public int clouds_low { get; set; }
+        public int clouds_mid { get; set; }
+        public string datetime { get; set; }
+        public double dewpt { get; set; }
+        public double high_temp { get; set; }
+        public double low_temp { get; set; }
+        public object max_dhi { get; set; }
+        public double max_temp { get; set; }
+        public double min_temp { get; set; }
+        public double moon_phase { get; set; }
+        public double moon_phase_lunation { get; set; }
+        public int moonrise_ts { get; set; }
+        public int moonset_ts { get; set; }
+        public double ozone { get; set; }
+        public int pop { get; set; }
+        public double precip { get; set; }
+        public double pres { get; set; }
+        public int rh { get; set; }
+        public double slp { get; set; }
+        public double snow { get; set; }
+        public double snow_depth { get; set; }
+        public int sunrise_ts { get; set; }
+        public int sunset_ts { get; set; }
         public double temp { get; set; }
-        public double feels_like { get; set; }
-        public double temp_min { get; set; }
-        public double temp_max { get; set; }
-        public int pressure { get; set; }
-        public int sea_level { get; set; }
-        public int grnd_level { get; set; }
-        public int humidity { get; set; }
-        public double temp_kf { get; set; }
-    }
-
-    public class Rain
-    {
-        public double _3h { get; set; }
+        public int ts { get; set; }
+        public double uv { get; set; }
+        public string valid_date { get; set; }
+        public double vis { get; set; }
+        public Weather weather { get; set; }
+        public string wind_cdir { get; set; }
+        public string wind_cdir_full { get; set; }
+        public int wind_dir { get; set; }
+        public double wind_gust_spd { get; set; }
+        public double wind_spd { get; set; }
     }
 
     public class Root
     {
-        public string cod { get; set; }
-        public int message { get; set; }
-        public int cnt { get; set; }
-        public List<List> list { get; set; }
-        public City city { get; set; }
-    }
-
-    public class Sys
-    {
-        public string pod { get; set; }
+        public string city_name { get; set; }
+        public string country_code { get; set; }
+        public List<Datum> data { get; set; }
+        public double lat { get; set; }
+        public double lon { get; set; }
+        public string state_code { get; set; }
+        public string timezone { get; set; }
     }
 
     public class Weather
     {
-        public int id { get; set; }
-        public string main { get; set; }
         public string description { get; set; }
+        public int code { get; set; }
         public string icon { get; set; }
     }
 
-    public class Wind
-    {
-        public double speed { get; set; }
-        public int deg { get; set; }
-        public double gust { get; set; }
-    }
 
-    public class SList
-    {
-        public int id { get; set; }
-        public string name { get; set; }
-        public Coord coord { get; set; }
-        public SMain main { get; set; }
-        public int dt { get; set; }
-        public Wind wind { get; set; }
-        public Sys sys { get; set; }
-        public object rain { get; set; }
-        public object snow { get; set; }
-        public Clouds clouds { get; set; }
-        public List<Weather> weather { get; set; }
-    }
-
-    public class SMain
-    {
-        public double temp { get; set; }
-        public double feels_like { get; set; }
-        public double temp_min { get; set; }
-        public double temp_max { get; set; }
-        public int pressure { get; set; }
-        public int humidity { get; set; }
-    }
-
-    public class SRoot
-    {
-        public string message { get; set; }
-        public string cod { get; set; }
-        public int count { get; set; }
-        public List<SList> list { get; set; }
-    }
 }
