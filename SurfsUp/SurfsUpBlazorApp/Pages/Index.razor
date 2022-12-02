@@ -23,12 +23,12 @@ else
 
     <input @bind="SearchWord" type="text"/>
     <button class="btn btn-primary" @onclick="Search">Søg</button>
-    //if user is logged in this button will be visible
-	@if (AuthenticationStateProvider.GetAuthenticationStateAsync().Result.User.IsInRole("Admin"))
+    //if Admin is logged in this button will be visible
+    @if (AuthenticationStateProvider.GetAuthenticationStateAsync().Result.User.IsInRole("PrivateRenter"))
 	{
 		<button style="float:right" class="btn btn-primary" @onclick="AddOwnBoard">Udlej dit board</button>
     }
-		
+	//else if (AuthenticationStateProvider.GetAuthenticationStateAsync().Result.User.IsInRole("PrivateRenter"))
 
     <table class="table">
         <thead>

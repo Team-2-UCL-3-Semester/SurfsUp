@@ -38,8 +38,8 @@ namespace SurfsUpAPI.Controllers
         }
 
         // POST: BoardController/Create
-        [HttpPost("Create")]
-        public async Task<IActionResult> Create([Bind("Id,Name,Length,Width,Thickness,Volume,Type,Price,Equipment,imgPath")] Board board)
+        [HttpGet("Create")]
+        public async Task<IActionResult> Create([Bind("Id,Name,Length,Width,Thickness,Volume,Type,Price,Equipment,imgPath")] Board board, string userId)
         {
             if (board.imgPath == "" || board.imgPath == null)
             {
@@ -53,6 +53,7 @@ namespace SurfsUpAPI.Controllers
                 board.Id = Guid.NewGuid();
                 _context.Add(board);
                 await _context.SaveChangesAsync();
+                _context.LinkUserBoard(userId, board.Id);
             }
             return Ok();
         }

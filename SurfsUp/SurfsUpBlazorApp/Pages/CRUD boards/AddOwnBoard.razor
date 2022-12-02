@@ -1,6 +1,7 @@
 ﻿@page "/AddOwnBoard"
 @inject HttpClient Http
 @inject NavigationManager navManager
+@inject AuthenticationStateProvider GetAuthenticationStateAsync
 <PageTitle>Udlej Dit Surfboard</PageTitle>
 
 <h1>Udlej Dit Surfboard</h1>
@@ -62,10 +63,14 @@
 	decimal Price;
 	string Equipment;
 	string imgPath;
-	
+
 	public async Task Create(HttpClient client, string name, decimal length, decimal width, decimal thickness, decimal volume, string type, decimal price, string? equipment, string? imgPath)
 	{
-		await client.GetStringAsync($"https://localhost:7154/Create?Name={name}&Length={length}&Width={width}&Thickness={thickness}&Volume={volume}&Type={type}&Price={price}&Equipment={equipment}&imgPath={imgPath}");
+		var authstate = await GetAuthenticationStateAsync.GetAuthenticationStateAsync();
+
+			//Checks if the user is logged in, if not, it will set the userId to a guest account's userId
+		var user = authstate.User.Claims.First().Value;
+		await client.GetStringAsync($"https://localhost:7154/Create?Name={name}&Length={length}&Width={width}&Thickness={thickness}&Volume={volume}&Type={type}&Price={price}&Equipment={equipment}&imgPath={imgPath}&userId={user}");
 		navManager.NavigateTo("/");
 	}
 
