@@ -2,53 +2,54 @@
 @inject HttpClient Http
 @inject NavigationManager navManager
 @inject AuthenticationStateProvider GetAuthenticationStateAsync
+@inject ProtectedSessionStorage ProtectedSessionStore
 <PageTitle>Udlej Dit Surfboard</PageTitle>
 
 <h1>Udlej Dit Surfboard</h1>
 
 <div class="form-group">
 	<label for="Name">Navn</label>
-	<input type="text" class="form-control" id="Name" placeholder="Navn" @bind="Navn" />
+	<input type="text" class="form-control" id="Name" placeholder="Navn" @bind="Navn" @onfocusout=TextChanged />
 </div>
 
 <div class="form-group">
 	<label for="Length">Længde</label>
-	<input type="text" class="form-control" id="Length" placeholder="Længde" @bind="Length" />
+	<input type="text" class="form-control" id="Length" placeholder="Længde" @bind="Length" @onfocusout=TextChanged />
 </div>
 
 <div class="form-group">
 	<label for="Width">Bredde</label>
-	<input type="text" class="form-control" id="Width" placeholder="Bredde" @bind="Width" />
+	<input type="text" class="form-control" id="Width" placeholder="Bredde" @bind="Width" @onfocusout=TextChanged />
 </div>
 
 <div class="form-group">
 	<label for="Thickness">Tykkelse</label>
-	<input type="text" class="form-control" id="Thickness" placeholder="Tykkelse" @bind="Thickness" />
+	<input type="text" class="form-control" id="Thickness" placeholder="Tykkelse" @bind="Thickness" @onfocusout=TextChanged />
 </div>
 
 <div class="form-group">
 	<label for="Volume">Volumen</label>
-	<input type="text" class="form-control" id="Volume" placeholder="Volumen" @bind="Volume" />
+	<input type="text" class="form-control" id="Volume" placeholder="Volumen" @bind="Volume" @onfocusout=TextChanged />
 </div>
 
 <div class="form-group">
 	<label for="Type">Type</label>
-	<input type="text" class="form-control" id="Type" placeholder="Type" @bind="Type" />
+	<input type="text" class="form-control" id="Type" placeholder="Type" @bind="Type" @onfocusout=TextChanged />
 </div>
 
 <div class="form-group">
 	<label for="Price">Pris</label>
-	<input type="text" class="form-control" id="Price" placeholder="Pris" @bind="Price" />
+	<input type="text" class="form-control" id="Price" placeholder="Pris" @bind="Price" @onfocusout=TextChanged />
 </div>
 
 <div class="form-group">
 	<label for="Equipment">Udstyr</label>
-	<input type="text" class="form-control" id="Equipment" placeholder="Udstyr" @bind="Equipment" />
+	<input type="text" class="form-control" id="Equipment" placeholder="Udstyr" @bind="Equipment" @onfocusout=TextChanged />
 </div>
 
 <div class="form-group">
 	<label for="imgPath">Billede</label>
-	<input type="text" class="form-control" id="imgPath" placeholder="Billede" @bind="imgPath" />
+	<input type="text" class="form-control" id="imgPath" placeholder="Billede" @bind="imgPath" @onfocusout=TextChanged />
 </div>
 
 <button class="btn btn-primary" @onclick="()=>Create(Http, Navn, Length, Width, Thickness, Volume, Type, Price, Equipment, imgPath)">Udlej dit board</button>
@@ -59,19 +60,72 @@
 	decimal Width;
 	decimal Thickness;
 	decimal Volume;
-	string Type;
+	string? Type;
 	decimal Price;
-	string Equipment;
-	string imgPath;
+	string? Equipment;
+	string? imgPath;
+
+	protected override async Task OnInitializedAsync()
+	{
+		var result = await ProtectedSessionStore.GetAsync<Board>("board");
+		if(result.Success)
+		{
+			Board board = result.Value;
+			Navn = board.Name;
+			Length = board.Length;
+			Width = board.Width;
+			Thickness = board.Thickness;
+			Volume = board.Volume;
+			Type = board.Type;
+			Price = board.Price;
+			Equipment = board.Equipment;
+			imgPath = board.imgPath;
+		}
+
+	}
 
 	public async Task Create(HttpClient client, string name, decimal length, decimal width, decimal thickness, decimal volume, string type, decimal price, string? equipment, string? imgPath)
 	{
 		var authstate = await GetAuthenticationStateAsync.GetAuthenticationStateAsync();
 
-			//Checks if the user is logged in, if not, it will set the userId to a guest account's userId
+		//Checks if the user is logged in, if not, it will set the userId to a guest account's userId
 		var user = authstate.User.Claims.First().Value;
 		await client.GetStringAsync($"https://localhost:7154/Create?Name={name}&Length={length}&Width={width}&Thickness={thickness}&Volume={volume}&Type={type}&Price={price}&Equipment={equipment}&imgPath={imgPath}&userId={user}");
 		navManager.NavigateTo("/");
+	}
+
+	public async void TextChanged()
+	{
+		Board temp = new Board(Navn, Length, Width, Thickness, Volume, Type, Price, Equipment, imgPath);
+		await ProtectedSessionStore.SetAsync("board", temp);
+	}
+
+	public class Board
+	{
+		public string Name { get; set; } = "";
+
+		public decimal Length { get; set; } = 0;
+
+		public decimal Width { get; set; } = 0;
+
+		public decimal Thickness { get; set; } = 0;
+
+		public decimal Volume { get; set; } = 0;
+
+		public string Type { get; set; } = "";
+
+		public decimal Price { get; set; } = 0;
+
+		public string Equipment { get; set; } = "";
+
+		public string imgPath { get; set; } = "";
+
+		public Board(string name, decimal length, decimal width, decimal thickness, decimal volume,
+					string type, decimal price, string equipment, string imgPath)
+		{
+			Name = name; Length = length; Width = width; Thickness = thickness; Volume = volume;
+			Type = type; Price = price; Equipment = equipment; this.imgPath = imgPath;
+		}
 	}
 
 }
