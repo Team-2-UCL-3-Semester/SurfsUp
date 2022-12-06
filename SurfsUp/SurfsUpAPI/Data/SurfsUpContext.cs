@@ -45,7 +45,7 @@ namespace SurfsUpAPI.Data
                         // Create and set the parameters values 
                         // We use "Parameters.Add" instead of "Parameters.AddWithValue" because this way, the method will check if the datatype maches 
                         // before the program runs, so it won't crash. "Parameters.AddWithValue" will try to guess the datatype, and isn't always correct.
-                        cmd.Parameters.Add("@StartDate", SqlDbType.DateTime2).Value = DateTime.Now;
+                        cmd.Parameters.Add("@StartDate", SqlDbType.DateTime2).Value = startDate;
                         cmd.Parameters.Add("@EndDate", SqlDbType.DateTime2).Value = endDate;
                         cmd.Parameters.Add("@UserId", SqlDbType.NVarChar).Value = userId;
                         cmd.Parameters.Add("@BoardId", SqlDbType.UniqueIdentifier).Value = boardId;
