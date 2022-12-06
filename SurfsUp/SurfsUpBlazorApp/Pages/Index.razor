@@ -32,7 +32,7 @@ else
     <table class="table">
         <thead>
             <tr>
-                <th>BoardIMG</th>
+                <th></th>
                 <th>Name</th>
                 <th>Length</th>
                 <th>Width</th>
@@ -192,7 +192,7 @@ else
         var createddate = Convert.ToDateTime(StartDate).ToString("yyyy-MM-dd HH:mm:ss.fffffff");
         await client.GetStringAsync($"https://localhost:7154/rent?userId={userId}&id={id}&startDate={createddate}");
         await GetBoards();
-        navManager.NavigateTo("/Confirmation");
+        navManager.NavigateTo("/ConfirmationPage", true);
     }
     public void Search()
     {
