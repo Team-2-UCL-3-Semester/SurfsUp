@@ -152,9 +152,8 @@ else
 
     public async Task Rent(HttpClient client, string userId, Guid id)
     {
-        string createddate = Convert.ToDateTime(StartDate).ToString("yyyy-MM-dd HH:mm:ss.fffffff");
-        DateTime date = DateTime.ParseExact(createddate, "yyyy-MM-dd HH:mm:ss.fffffff", CultureInfo.InvariantCulture);
-        await client.GetStringAsync($"https://localhost:7154/rent?userId={userId}&id={id}&startDate={date}");
+        var createddate = Convert.ToDateTime(StartDate).ToString("yyyy-MM-dd HH:mm:ss.fffffff");
+        await client.GetStringAsync($"https://localhost:7154/rent?userId={userId}&id={id}&startDate={createddate}");
         await GetBoards();
         navManager.NavigateTo("/Confirmation");
     }

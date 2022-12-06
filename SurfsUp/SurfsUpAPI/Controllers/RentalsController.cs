@@ -52,20 +52,20 @@ namespace SurfsUpAPI.Controllers
             if (userId == null || userId == "")
             {
                 board.IsRented = true;
-                board.RentedDate = DateTime.Now;
+                board.RentedDate = startDate;
 
                 await _context.SaveChangesAsync();
 
-                _context.SaveRenting(startDate, DateTime.Now.AddMinutes(1), "9e7aa49f-1b34-468e-b60d-dd2541c9694e", id);
+                _context.SaveRenting(startDate, startDate.AddMinutes(2), "9e7aa49f-1b34-468e-b60d-dd2541c9694e", id);
             }
             else
             {
                 board.IsRented = true;
-                board.RentedDate = DateTime.Now;
+                board.RentedDate = startDate;
 
                 await _context.SaveChangesAsync();
 
-                _context.SaveRenting(startDate, DateTime.Now.AddMinutes(1), userId, id);
+                _context.SaveRenting(startDate, startDate.AddMinutes(2), userId, id);
             }
             return Ok();
         }
