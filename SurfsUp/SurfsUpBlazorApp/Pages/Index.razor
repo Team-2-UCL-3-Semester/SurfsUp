@@ -10,7 +10,6 @@
 @inject HttpClient Http
 @inject AuthenticationStateProvider GetAuthenticationStateAsync
 @inject NavigationManager navManager
-@*@inject HttpContext HttpContext*@
 @inject AuthenticationStateProvider AuthenticationStateProvider
 
 <PageTitle>Index</PageTitle>
@@ -29,7 +28,6 @@ else
 	{
 		<button style="float:right" class="btn btn-primary" @onclick="AddOwnBoard">Udlej dit board</button>
     }
-	//else if (AuthenticationStateProvider.GetAuthenticationStateAsync().Result.User.IsInRole("PrivateRenter"))
 
     <table class="table">
         <thead>
@@ -64,7 +62,6 @@ else
                             <td>@board.Equipment</td>
                             <td>
                                 <button type="button" class="btn btn-primary" data-toggle="modal" @onclick="()=>SetBoard(board.Id)" data-target="#exampleModal">Lej</button>
-                                @*<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">*@
                             </td>
 							<td>
                             @if (AuthenticationStateProvider.GetAuthenticationStateAsync().Result.User.IsInRole("Admin"))
@@ -81,7 +78,7 @@ else
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                                <h5 class="modal-title" id="exampleModalLabel">Oversigt</h5>
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
@@ -91,6 +88,32 @@ else
                                 <input type="datetime-local" @bind="StartDate">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Luk</button>
                                 <button type="button" @onclick="StartRenting" class="btn btn-primary">Gem</button>
+                            </div>
+                            <div>
+                                    @foreach (var board in boards)
+                                    {
+                                        if(board.Id == CurrentBoardId)
+                                        {
+
+                                            <table class="table">
+                                                <thead>
+                                                    <tr>
+                                                       <th>Navn</th>
+                                                       <th>Type</th>
+                                                       <th>Pris</th>
+                                                       <th>Udstyr</th>
+
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <th>@board.Name</th>
+                                                    <th>@board.Type</th>
+                                                    <th>@board.Price</th>
+                                                    <th>@board.Equipment</th>
+                                                </tbody>
+                                            </table>
+                                        }
+                                    }
                             </div>
                         </div>
                     </div>
