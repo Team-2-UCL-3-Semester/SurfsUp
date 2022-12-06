@@ -88,6 +88,19 @@ namespace SurfsUpAPI.Controllers
             return Ok();
         }
 
+        [HttpGet("reset")]
+        public async Task<IActionResult> ResetBoards()
+        {
+            var boards = _context.Board.Where(s => !s.IsRented);
+            var rentedBoards = _context.Board.Where(s => s.IsRented);
+            foreach (var board in rentedBoards)
+            {
+                board.IsRented = false;
+            }
+            await _context.SaveChangesAsync();
+            return Ok();
+        }
+
         [HttpGet("Index")]
         public IActionResult IndexV1()
         {
