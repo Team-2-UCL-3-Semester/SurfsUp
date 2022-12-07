@@ -19,7 +19,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 
-namespace SurfsUp.Areas.Identity.Pages.Account
+namespace SurfsUpBlazorApp.Areas.Identity.Pages.Account
 {
     public class RegisterModel : PageModel
     {
@@ -30,7 +30,7 @@ namespace SurfsUp.Areas.Identity.Pages.Account
         private readonly ILogger<RegisterModel> _logger;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IEmailSender _emailSender;
-        
+
         public RegisterModel(
             UserManager<IdentityUser> userManager,
             IUserStore<IdentityUser> userStore,
@@ -98,7 +98,7 @@ namespace SurfsUp.Areas.Identity.Pages.Account
             /// </summary>
             [DataType(DataType.Password)]
             [Display(Name = "Confirm password")]
-            [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
+            [Compare("Password", ErrorMessage = "Passwordet og confirmation passwordet stemmer ikke overens")]
             public string ConfirmPassword { get; set; }
         }
 
@@ -123,9 +123,8 @@ namespace SurfsUp.Areas.Identity.Pages.Account
 
                 if (result.Succeeded)
                 {
-                    var renter = _roleManager.FindByNameAsync("PrivateRenter").Result;
-                    await _userManager.AddToRoleAsync(user, renter.Name);
-                    _logger.LogInformation("Udlejer created a new account with password.");
+                    await _userManager.AddToRoleAsync(user, "PrivateRenter");
+                    _logger.LogInformation("User created a new account with password.");
 
                     var userId = await _userManager.GetUserIdAsync(user);
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
