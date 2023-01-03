@@ -64,7 +64,7 @@ else
                                 <button type="button" class="btn btn-primary" data-toggle="modal" @onclick="()=>SetBoard(board.Id)" data-target="#exampleModal">Lej</button>
                             </td>
 							<td>
-                            @if (AuthenticationStateProvider.GetAuthenticationStateAsync().Result.User.IsInRole("Admin"))
+                                @if (AuthenticationStateProvider.GetAuthenticationStateAsync().Result.User.IsInRole("Admin"))
 	                        {
 		                        <button class="btn btn-primary" @onclick="()=>EditBoard(board.Id)">Edit</button>
                             }
