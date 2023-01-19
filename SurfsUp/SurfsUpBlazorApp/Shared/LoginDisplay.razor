@@ -1,12 +1,13 @@
 ﻿<AuthorizeView>
     <Authorized>
-        <a href="Identity/Account/Manage">Hello, @context.User.Identity?.Name!</a>
+        <a href="Identity/Account/Manage">Hej, @context.User.Identity?.Name!</a>
         <form method="post" action="Identity/Account/LogOut">
-            <button type="submit" class="nav-link btn btn-link">Log out</button>
+            <button type="submit" class="nav-link btn btn-link">Log ud</button>
         </form>
     </Authorized>
     <NotAuthorized>
-        <a href="Identity/Account/Register">Register</a>
-        <a href="Identity/Account/Login">Log in</a>
+		<a style="padding-right : 25px" href="Identity/Account/RegisterRenter">Tilmeld som Udlejer</a> |
+        <a style="padding-right : 25px" href="Identity/Account/Register">Tilmeld som Bruger</a> |
+        <a style="padding-right : 25px" href="Identity/Account/Login">Log ind</a> |
     </NotAuthorized>
 </AuthorizeView>
