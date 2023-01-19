@@ -55,13 +55,13 @@ else
     // Initializes this method when u go in on the page
     protected override async Task OnInitializedAsync()
     {
-        var json = await Http.GetStringAsync($"https://api.weatherbit.io/v2.0/forecast/daily?lat=55.39&lon=10.38&days=7&key=62b7e572ebbf4a0fa1e1c2ba921ea1b5");
+        var json = await Http.GetStringAsync($"https://api.weatherbit.io/v2.0/forecast/daily?lat=55.39&lon=10.38&days=7&key=14494f919c1848bb839ef261a6fd8272");
         forecasts = JsonSerializer.Deserialize<Root>(json);
     }
     // This method is run when u click the button the page
     public async Task Search()
     {
-        var json = await Http.GetStringAsync($"https://api.weatherbit.io/v2.0/forecast/daily?lat=55.39&lon=10.38&days={Days}&key=62b7e572ebbf4a0fa1e1c2ba921ea1b5");
+        var json = await Http.GetStringAsync($"https://api.weatherbit.io/v2.0/forecast/daily?lat=55.39&lon=10.38&days={Days}&key=14494f919c1848bb839ef261a6fd8272");
         forecasts = JsonSerializer.Deserialize<Root>(json);
     }
 
